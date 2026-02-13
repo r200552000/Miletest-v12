@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TDC環哩匯 x 航空卡消費累哩工具 v12.8 (智慧自動版)</title>
+  <title>TDC環哩匯 x 航空卡消費累哩工具 v12.9 (終極自由版)</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Mali:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,7 +11,7 @@
 
   <style>
     /* =========================
-       CSS 樣式表 (v12.8 Final)
+       CSS 樣式表 (v12.9 Final)
        ========================= */
     :root {
       --bg-main: #fffdf9;
@@ -101,8 +101,18 @@
     .card-miles { font-size: 1.3rem; color: #34d399; font-weight: 900; font-family: var(--font-hand); }
     .card-tpm { font-size: 0.75rem; color: #94a3b8; font-weight: 700; background: #fff; padding: 2px 8px; border-radius: 10px; display: inline-block; border: 1px solid #e2e8f0; }
 
-    .btn-correct { border: 1px solid #e2e8f0; background: #fff; color: #94a3b8; border-radius: 12px; padding: 4px 10px; font-size: 0.8rem; font-weight: 700; font-family: var(--font-hand); cursor: pointer; transition: 0.2s; }
-    .btn-correct:hover { background: #f1f5f9; color: var(--primary); border-color: var(--primary); }
+    /* Control Buttons in Card */
+    .card-actions { margin-top: 10px; display: flex; gap: 8px; }
+    .btn-card-action { 
+        border: 1px solid #e2e8f0; background: #fff; color: #64748b; 
+        border-radius: 50px; padding: 6px 14px; font-size: 0.8rem; font-weight: 700; 
+        font-family: var(--font-hand); cursor: pointer; transition: 0.2s; 
+        display: flex; align-items: center; gap: 4px; box-shadow: 1px 1px 0 #e2e8f0;
+    }
+    .btn-card-action:hover { transform: translateY(-1px); }
+    .btn-card-action.btn-record-win { background: #3b82f6; color: white; border-color: #2563eb; box-shadow: 1px 1px 0 #2563eb; }
+    .btn-card-action.btn-record { color: var(--primary); border-color: #bfdbfe; background: #eff6ff; }
+
     .custom-rule-tag { font-size: 0.7rem; color: #fff; background: #a8a29e; padding: 2px 6px; border-radius: 4px; margin-left: 6px; display: inline-block; transform: rotate(0deg); box-shadow: none; font-weight: normal; }
 
     .nccc-alert { background-color: #fffbeb; border: 2px dashed #f59e0b; border-radius: 16px; padding: 12px; margin-bottom: 16px; font-size: 0.85rem; color: #92400e; text-align: left; }
@@ -159,8 +169,8 @@
     <div class="d-flex align-items-center">
       <div class="header-icon"><i class="fa-solid fa-plane-departure"></i></div>
       <div class="header-title">
-        <h5>TDC環哩匯 x 航空卡<br>消費累哩工具 v12.8</h5>
-        <small class="text-secondary fw-bold">⚙️ 智慧自動版</small>
+        <h5>TDC環哩匯 x 航空卡<br>消費累哩工具 v12.9</h5>
+        <small class="text-secondary fw-bold">⚙️ 終極自由版</small>
       </div>
     </div>
     <button class="btn-header" onclick="openSettings()"><i class="fa-solid fa-gear me-1"></i> 設定</button>
@@ -284,12 +294,6 @@
         </div>
 
         <div id="cards-container"></div>
-
-        <div class="card-box mt-3 p-3 text-center" style="background:#f8fafc; border-style:dashed;">
-           <button onclick="recordResult()" class="btn btn-outline-dark rounded-pill fw-bold px-4 w-100" style="font-family:var(--font-hand); border-width:2px;">
-             <i class="fa-solid fa-check me-2"></i> 記帳這筆 (首選)
-           </button>
-        </div>
       </div>
       
       <div class="disclaimer-text">
@@ -348,18 +352,18 @@
     <!-- Guide Page (Updated) -->
     <div id="page-guide" class="page-section" style="display:none;">
         <div class="card-box">
-            <h5 class="mb-4 text-primary"><i class="fa-solid fa-book-open me-2"></i>新手指南 v12.8</h5>
+            <h5 class="mb-4 text-primary"><i class="fa-solid fa-book-open me-2"></i>新手指南 v12.9</h5>
             <div class="guide-step"><div class="step-num">1</div><div class="step-content"><h6>Zero Config 零設定</h6><p>只要在「設定」啟用卡片，系統會自動在倉庫建立對應的積分/哩程帳戶，無須手動輸入。</p></div></div>
-            <div class="guide-step"><div class="step-num">2</div><div class="step-content"><h6>Smart Record 智慧記帳</h6><p>計算完成後點擊「記帳這筆」，系統會自動將獲得的哩程存入倉庫。<strong>若為匯豐 Live+ 卡，系統會自動除以 2 換算回積分存入！</strong></p></div></div>
+            <div class="guide-step"><div class="step-num">2</div><div class="step-content"><h6>自由記帳 (New)</h6><p>計算完成後，<strong>您可以點擊任一張卡片上的「記帳」按鈕</strong>，系統會自動將該卡片的數據存入對應倉庫。若為匯豐 Live+，依然會自動除以 2 換算回積分！</p></div></div>
             <div class="guide-step"><div class="step-num">3</div><div class="step-content"><h6>資產管理</h6><p>在倉庫頁面，您可以隨時點擊「✏️ 修改」按鈕來歸零或調整已兌換的點數。</p></div></div>
             
             <div class="alert alert-light border mt-4">
-              <h6 class="fw-bold text-primary"><i class="fa-solid fa-rocket me-2"></i>v12.8 版本更新日誌 (智慧自動版)</h6>
+              <h6 class="fw-bold text-primary"><i class="fa-solid fa-rocket me-2"></i>v12.9 版本更新日誌 (終極自由版)</h6>
               <ul class="mb-0 ps-3 small text-secondary" style="line-height: 1.6;">
-                <li><strong>自動建倉：</strong>啟用卡片即自動建立對應資產，省去手動作業。</li>
-                <li><strong>智慧反推 (Auto-Rollback)：</strong>匯豐 Live+ 記帳時自動除以 2 存入積分；其他卡片自動 1:1 存入。</li>
-                <li><strong>資產編輯：</strong>倉庫新增「修改」按鈕，方便隨時校正餘額。</li>
-                <li><strong>UI 極簡化：</strong>記帳確認視窗簡化為單純的確認/取消。</li>
+                <li><strong>自由記帳：</strong>不再強制鎖定第一名，開放點擊任意卡片進行記帳。</li>
+                <li><strong>匯豐分流：</strong>Live+ 與旅人積分現在會分別存入不同的倉庫帳戶，帳務更清晰。</li>
+                <li><strong>UI 修復：</strong>記帳時確認視窗標題已修正為「確認記帳」。</li>
+                <li><strong>自動化：</strong>延續 v12.8 的自動建倉與智慧反推邏輯。</li>
               </ul>
             </div>
         </div>
@@ -389,7 +393,7 @@
     </div>
   </div>
 
-  <!-- Asset Edit Modal (New) -->
+  <!-- Asset Edit Modal -->
   <div class="modal fade" id="editAssetModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow">
@@ -436,7 +440,7 @@
   <div class="modal fade" id="confirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg">
-        <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold">⚠️ 確認動作</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" id="confirmModalTitle">⚠️ 確認動作</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body text-center py-4"><p class="mb-0 text-secondary fw-bold" id="confirm-msg" style="line-height:1.5;"></p></div>
         <div class="modal-footer border-0 pt-0 d-flex justify-content-center gap-3 pb-4"><button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">取消</button><button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" id="btn-confirm-yes">確認</button></div>
       </div>
@@ -446,7 +450,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     /* =========================
-       哩程攻略 v12.8 (智慧自動版：Zero Config + Auto Rollback)
+       哩程攻略 v12.9 (終極自由版：自由記帳 + 匯豐分流)
        ========================= */
 
     const DB_UPDATE_DATE = "2026/02/13"; 
@@ -460,10 +464,10 @@
       { id: 'ctbc_ci',   name: '中信 華航鼎尊卡', default: true, note: '海外實體 $6/哩' }
     ];
 
-    // 🌟 自動建倉規則對應表 (v12.8 New)
+    // 🌟 自動建倉規則 (v12.9 Split Assets)
     const AUTO_ASSETS = {
-        'hsbc_live': { target: '匯豐銀行 (積分)', type: 'transfer', ratio: 1, unitPoints:1, unitMiles:1 },
-        'hsbc_inf': { target: '匯豐銀行 (積分)', type: 'transfer', ratio: 1, unitPoints:1, unitMiles:1 },
+        'hsbc_live': { target: '匯豐 Live+ 現金積分', type: 'transfer', ratio: 2, unitPoints:1, unitMiles:2 },
+        'hsbc_inf': { target: '匯豐 旅人積分', type: 'transfer', ratio: 1, unitPoints:1, unitMiles:1 },
         'ctbc_ci': { target: '中華航空 (哩程)', type: 'airline', ratio: 1 },
         'ctbc_ci_inf': { target: '中華航空 (哩程)', type: 'airline', ratio: 1 },
         'taishin_cx': { target: '亞洲萬里通/國泰 (哩程)', type: 'airline', ratio: 1 }
@@ -472,13 +476,12 @@
     const DEFAULT_BILLING = { hsbc:6, ctbc:15, taishin:20, other:1 };
     const RATES = { TWD:1, USD:33.5, JPY:0.225, EUR:36, CNY:4.6, KRW:0.025, THB:0.96, SGD:24.5, other: 1 };
     
-    // Keywords (Same as v12.7)
+    // Keywords (Same as before)
     const LIVE_KEYWORDS = { 'dining': ['餐廳','吃飯','外送','ubereats','foodpanda','燒肉','火鍋','麻辣','壽司','日式','居酒屋','餐酒館','酒吧','咖啡','甜點','牛排','鐵板燒','拉麵','茶六','屋馬','乾杯','buffet','王品','享鴨','夏慕尼','西堤','石二鍋','陶板屋','青花驕','饗賓','饗饗','開飯','瓦城','鼎泰豐','海底撈','金大鋤','築間','壽司郎','藏壽司','爭鮮','吉兆','明壽司','金色三麥','春大直','貳樓','涓豆腐','hooters','勝田','麥當勞','星巴克','必勝客','達美樂','富王','文公館','教父牛排','山海樓','鹽之華','牡丹','logy','inita','ikea','莫凡彼','貴族世家'], 'shop': ['momo','pchome','蝦皮','shopee','amazon','ebay','露天','friday','gomaji','淘寶','uniqlo','zara','h&m','net','gu','nike','adidas','outlet','台北101','三井','微風','sogo','漢神','華泰','新光','skm','att','美麗華','南紡','統一時代','遠雄','京站','citylink','夢時代','lalaport','高島屋','中友','遠企','麗寶','比漾','大江','巨城','遠東','global mall','環球','義大','台茂','宏匯','義享','noke','大魯閣','明曜','bellavita','寶雅','無印良品','muji','屈臣氏','康是美','松本清','唐吉訶德'], 'entertainment': ['新光影城','威秀','國賓','秀泰','環球影城','迪士尼','吉卜力','樂天世界','legoland','safari','兒童新樂園','x park','小人國','六福村','海洋公園','麗寶樂園','劍湖山','九族','尚順','義大遊樂','巧虎','動物園','海生館','奇美博物館','小叮噹','野柳','埔心','飛牛','頑皮世界','美術館','日月潭','太平山','阿里山','大雪山','墾丁','森林遊樂區'] };
     const CTBC_INF_TRAVEL_KEYWORDS = ['agoda','booking','trip','klook','hotels','expedia','airbnb'];
     const CTBC_BOOKING_KEYWORDS = ['agoda','booking','hotels.com','expedia','trip.com','airbnb'];
     const NCCC_FAST_FOOD = ['麥當勞','肯德基','漢堡王','摩斯','頂呱呱','必勝客','達美樂','拿坡里','subway'];
     const NCCC_BLACKLIST = ['八方雲集','爭鮮','路易莎','louisa','cama','50嵐','清心','迷客夏','可不可','停車','嘟嘟房','小額'];
-    
     const COMMON_BLOCK = ['管理費','社區','稅','學費','水費','電費','瓦斯','罰','規費','健保','電信','中華電信','遠傳','台灣大','儲值','預借','分期'];
     const CTBC_BLOCK = [...COMMON_BLOCK, '全聯','px','全支付','7-11','711','全家','萊爾富','ok超商','繳費','etoro','wise','revolut', ...NCCC_BLACKLIST];
     const HSBC_BLOCK_BASE = [...COMMON_BLOCK, '全聯','px','7-11','711','全家','萊爾富','ok超商','繳費','判決書','醫療','掛號','年費','手續費','賭博', ...NCCC_BLACKLIST];
@@ -500,10 +503,12 @@
     }
 
     let pendingDeleteAction = null; 
-    function showConfirm(msg, callback, btnText='確認') {
+    // 🌟 標題參數 (v12.9)
+    function showConfirm(msg, callback, btnText='確認', title='⚠️ 確認動作') {
+        document.getElementById('confirmModalTitle').innerText = title;
         document.getElementById('confirm-msg').innerHTML = msg.replace(/\n/g, '<br>');
         document.getElementById('btn-confirm-yes').innerText = btnText;
-        document.getElementById('btn-confirm-yes').className = `btn rounded-pill px-4 fw-bold ${btnText==='確認'?'btn-primary':'btn-danger'}`;
+        document.getElementById('btn-confirm-yes').className = `btn rounded-pill px-4 fw-bold ${btnText.includes('確認')?'btn-primary':'btn-danger'}`;
         pendingDeleteAction = callback;
         const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmModal'));
         m.show();
@@ -516,7 +521,7 @@
     const DB_KEY = 'MILES_APP_V12_6_DATA'; 
     const RULES_KEY = 'MILES_APP_RULES';
     let correctionTarget = { id: null, name: null };
-    let editAssetTargetIdx = null; // For editing warehouse asset
+    let editAssetTargetIdx = null;
 
     function cleanUpOldRecords(db) {
         if (!db.records) return false;
@@ -532,7 +537,6 @@
         return isModified;
     }
 
-    // 🌟 自動建倉邏輯 (v12.8 Core)
     function checkAndCreateAutoAssets(db) {
         let created = false;
         db.settings.enabledBuiltins.forEach(cardId => {
@@ -575,7 +579,7 @@
     function saveDB(data) { localStorage.setItem(DB_KEY, JSON.stringify(data)); }
     function initDB() { 
         let db = { settings: { enabledBuiltins: BUILTIN_DEFS.filter(c => c.default).map(c => c.id), billingDays: { ...DEFAULT_BILLING }, hsbc_autopay: true }, customCards: [], records: {}, limits: {}, warehouse: [], airlineGoals: {} };
-        checkAndCreateAutoAssets(db); // Initialize auto assets
+        checkAndCreateAutoAssets(db);
         return db;
     }
     function loadRules() { const raw = localStorage.getItem(RULES_KEY); return raw ? JSON.parse(raw) : {}; }
@@ -638,18 +642,45 @@
 
       results.forEach(r => { r.tpm = r.miles > 0 ? (ctx.twdSpend / r.miles) : 999; });
       results.sort((a,b) => b.miles - a.miles);
-      window.currentBest = { ...results[0], twdSpend: ctx.twdSpend, twdBase: ctx.twdBase, isFlyQualifying: results[0].isFlyQualifying };
+      
+      // 🌟 將結果存入全域變數，供自由記帳使用 (v12.9)
+      window.currentResults = results.map(r => ({ ...r, twdSpend: ctx.twdSpend, twdBase: ctx.twdBase, isFlyQualifying: r.isFlyQualifying }));
+      
       renderResults(results, ctx.twdSpend);
     }
 
     function renderResults(list, spend) {
       const con = $('cards-container'); con.innerHTML = ''; $('result-area').style.display = 'block';
       if(list.length === 0) { con.innerHTML = '<div class="text-center p-3 text-muted">沒有啟用的卡片</div>'; return; }
+      
       list.forEach((c, idx) => {
-        const isWinner = idx === 0; const div = document.createElement('div'); div.className = `plan-card ${isWinner ? 'plan-winner' : ''}`;
+        const isWinner = idx === 0;
+        const div = document.createElement('div');
+        div.className = `plan-card ${isWinner ? 'plan-winner' : ''}`;
         let badge = isWinner ? `<span class="winner-badge"><i class="fa-solid fa-crown"></i> WINNER</span>` : '';
         let customTag = c.isCustom ? '<span class="custom-rule-tag">自訂規則</span>' : '';
-        div.innerHTML = `${badge}<div class="d-flex justify-content-between align-items-center"><div><div class="d-flex align-items-center mb-1"><h4 class="card-name mb-0">${c.name}</h4>${customTag}</div><div class="text-muted small font-hand">${c.note}</div><div class="mt-2"><button class="btn-correct" onclick="openCorrection('${c.id}','${c.name}')"><i class="fa-solid fa-pen"></i> 修正</button></div></div><div class="text-end"><div class="card-miles">${c.miles.toLocaleString()} <small style="font-size:0.5em; color:#64748b;">哩</small></div><div class="card-tpm">${c.tpm < 200 ? c.tpm.toFixed(1) : '>200'} 元/哩</div></div></div>`;
+        
+        // 🌟 新增：每張卡片的記帳按鈕 (v12.9)
+        let recordBtnClass = isWinner ? 'btn-record-win' : 'btn-record';
+        let recordBtnIcon = isWinner ? '🏆' : '📝';
+        let recordBtnText = isWinner ? '記帳' : '記帳';
+
+        div.innerHTML = `
+          ${badge}
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="d-flex align-items-center mb-1"><h4 class="card-name mb-0">${c.name}</h4>${customTag}</div>
+              <div class="text-muted small font-hand">${c.note}</div>
+              <div class="card-actions">
+                 <button class="btn-card-action ${recordBtnClass}" onclick="confirmRecord(${idx})">${recordBtnIcon} ${recordBtnText}</button>
+                 <button class="btn-correct" onclick="openCorrection('${c.id}','${c.name}')"><i class="fa-solid fa-pen"></i> 修正</button>
+              </div>
+            </div>
+            <div class="text-end">
+              <div class="card-miles">${c.miles.toLocaleString()} <small style="font-size:0.5em; color:#64748b;">哩</small></div>
+              <div class="card-tpm">${c.tpm < 200 ? c.tpm.toFixed(1) : '>200'} 元/哩</div>
+            </div>
+          </div>`;
         con.appendChild(div);
       });
     }
@@ -705,39 +736,26 @@
         $('trans-source-name').value = ''; $('trans-current').value = ''; $('trans-target-airline').value = ''; $('trans-unit-points').value = ''; $('trans-unit-miles').value = ''; $('trans-bonus-thres').value = ''; $('trans-bonus-val').value = ''; renderWarehouse();
     }
 
-    function delWarehouseAsset(idx) { showConfirm('確定要刪除這筆資產嗎？', () => { const db = loadDB(); db.warehouse.splice(idx, 1); saveDB(db); renderWarehouse(); }, '刪除'); }
-    function delHistoryRecord(id) { showConfirm('確定要刪除這筆歷史紀錄嗎？\n(這也會扣除相應的上限額度)', () => { const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; if (db.records[monthKey] && db.records[monthKey][id]) { delete db.records[monthKey][id]; saveDB(db); updateStatusUI(); } }, '刪除'); }
+    function delWarehouseAsset(idx) { showConfirm('確定要刪除這筆資產嗎？', () => { const db = loadDB(); db.warehouse.splice(idx, 1); saveDB(db); renderWarehouse(); }, '刪除', '⚠️ 確認刪除'); }
+    function delHistoryRecord(id) { showConfirm('確定要刪除這筆歷史紀錄嗎？\n(這也會扣除相應的上限額度)', () => { const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; if (db.records[monthKey] && db.records[monthKey][id]) { delete db.records[monthKey][id]; saveDB(db); updateStatusUI(); } }, '刪除', '⚠️ 確認刪除'); }
     function updateAirlineGoal(airline, val) { const v = parseInt(val); if(v < 0) return showAlert('目標不可為負數'); const db = loadDB(); db.airlineGoals[airline] = v || 0; saveDB(db); renderWarehouse(); }
 
-    // 🌟 新增：資產編輯功能
     function openEditAsset(idx) {
-        editAssetTargetIdx = idx;
-        const db = loadDB();
-        const asset = db.warehouse[idx];
-        if(!asset) return;
-        document.getElementById('edit-asset-name').innerText = asset.name;
-        document.getElementById('edit-asset-val').value = asset.current;
-        const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal'));
-        m.show();
+        editAssetTargetIdx = idx; const db = loadDB(); const asset = db.warehouse[idx]; if(!asset) return;
+        document.getElementById('edit-asset-name').innerText = asset.name; document.getElementById('edit-asset-val').value = asset.current;
+        const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')); m.show();
     }
     function saveAssetEdit() {
         const val = parseFloat(document.getElementById('edit-asset-val').value);
         if(isNaN(val) || val < 0) return showAlert('請輸入有效數值 (>=0)');
-        const db = loadDB();
-        if(db.warehouse[editAssetTargetIdx]) {
-            db.warehouse[editAssetTargetIdx].current = val;
-            saveDB(db);
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')).hide();
-            renderWarehouse();
-        }
+        const db = loadDB(); if(db.warehouse[editAssetTargetIdx]) { db.warehouse[editAssetTargetIdx].current = val; saveDB(db); bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')).hide(); renderWarehouse(); }
     }
 
     function openCorrection(id, name) {
         const kw = ($('keyword-input').value || '').trim();
         if(!kw) { return showAlert('請注意：\n\n您必須先在「消費類別/備註」欄位輸入一個關鍵字 (例如: 麥當勞)，系統才能針對該關鍵字設定專屬的回饋規則。'); }
         correctionTarget = { id, name }; $('modal-card-name').innerText = name; $('modal-keyword').innerText = kw; $('modal-new-rate').value = '';
-        const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal'));
-        m.show();
+        const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal')); m.show();
     }
     function saveCorrection() {
         const kw = ($('keyword-input').value || '').trim(); const val = parseFloat($('modal-new-rate').value);
@@ -745,7 +763,7 @@
         const rules = loadRules(); rules[`${kw.toLowerCase()}|${correctionTarget.id}`] = val; saveRules(rules);
         bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal')).hide(); calculate();
     }
-    function clearCustomRules() { showConfirm('確定清除所有手動修正的規則嗎？', () => { localStorage.removeItem(RULES_KEY); calculate(); }, '刪除'); }
+    function clearCustomRules() { showConfirm('確定清除所有手動修正的規則嗎？', () => { localStorage.removeItem(RULES_KEY); calculate(); }, '刪除', '⚠️ 確認刪除'); }
 
     function getBillingCycle(cardPrefix, billingDay) {
       const now = new Date(); const monthOffset = (now.getDate() > billingDay) ? 1 : 0;
@@ -753,47 +771,42 @@
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     }
 
-    // 🌟 記帳邏輯 (v12.8 智慧反推)
-    function recordResult() {
-      if(!window.currentBest) return;
-      const { id, name, miles, twdSpend, twdBase, isFlyQualifying } = window.currentBest;
+    // 🌟 記帳邏輯 (v12.9: 接收 Index 參數)
+    function confirmRecord(resultIdx) {
+      const resultData = window.currentResults[resultIdx];
+      if(!resultData) return;
       
+      const { id, name, miles, twdSpend, twdBase, isFlyQualifying } = resultData;
       let extraNote = '';
       const autoRule = AUTO_ASSETS[id];
       if(autoRule) {
-          if(id === 'hsbc_live') { extraNote = `<br><span class="text-primary small">(系統將自動除以2存入積分)</span>`; }
+          if(id === 'hsbc_live') { extraNote = `<br><span class="text-primary small">(智慧換算: ${miles}哩 ÷ 2 = ${Math.round(miles/2)}積分)</span>`; }
           else { extraNote = `<br><span class="text-primary small">(將存入: ${autoRule.target})</span>`; }
       }
 
       showConfirm(`確定記帳？\n卡片：${name}\n累積：${miles} 哩\n成本：$${twdSpend}${extraNote}`, () => {
           const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
           
-          // 1. 流水帳
           if(!db.records[monthKey]) db.records[monthKey] = {};
           if(!db.records[monthKey][id]) db.records[monthKey][id] = { miles:0, spend:0, name };
           db.records[monthKey][id].miles += miles; db.records[monthKey][id].spend += twdSpend;
 
-          // 2. 額度監控
           let limitKey = '';
           if(id === 'taishin_cx') { limitKey = `${now.getFullYear()}-${id}`; if(!db.limits[limitKey]) db.limits[limitKey] = { spend:0, points:0, startDay: 1 }; } 
           else { let day = db.settings.billingDays[id.split('_')[0]] || db.settings.billingDays['other'] || 1; limitKey = `${getBillingCycle(null, day)}-${id}`; if(!db.limits[limitKey]) db.limits[limitKey] = { spend:0, points:0, startDay: day }; }
           if(!(id === 'taishin_cx' && !isFlyQualifying)) db.limits[limitKey].spend += twdBase; 
           db.limits[limitKey].points += miles;
           
-          // 3. 🌟 自動存入倉庫 (v12.8 Smart Logic)
           if(autoRule) {
-              // 找倉庫
               let targetAsset = db.warehouse.find(a => a.targetAirline === autoRule.target);
-              // 若找不到(雖有防呆但保險起見)，先不存
               if(targetAsset) {
                   let pointsToAdd = miles;
-                  if(id === 'hsbc_live') { pointsToAdd = Math.round(miles / 2); } // Auto Rollback
+                  if(id === 'hsbc_live') { pointsToAdd = Math.round(miles / 2); } 
                   targetAsset.current = parseFloat(targetAsset.current) + pointsToAdd;
               }
           }
-
           saveDB(db); updateStatusUI(); renderWarehouse();
-      }, '確認');
+      }, '確認記帳', '📝 確認記帳');
     }
 
     function updateStatusUI() {
@@ -859,13 +872,13 @@
         if(dom <= 0 || fore <= 0) return showAlert('費率不可為零或負數');
         const db = loadDB(); db.customCards.push({ id: `cust_${Date.now()}`, name, domRate: dom, forRate: fore }); saveDB(db); renderSettings(); $('new-card-name').value = ''; $('new-card-dom').value = ''; $('new-card-for').value = ''; 
     }
-    function delCustomCard(idx) { showConfirm('確定要刪除這張自訂卡片嗎？', () => { const db = loadDB(); db.customCards.splice(idx, 1); saveDB(db); renderSettings(); }, '刪除'); }
+    function delCustomCard(idx) { showConfirm('確定要刪除這張自訂卡片嗎？', () => { const db = loadDB(); db.customCards.splice(idx, 1); saveDB(db); renderSettings(); }, '刪除', '⚠️ 確認刪除'); }
     function updateBilling(key, val) { const v=parseInt(val); if(v<1 || v>31) return showAlert('結帳日需介於1~31之間'); const db = loadDB(); db.settings.billingDays[key] = v || 1; saveDB(db); updateStatusUI(); }
     function $(id) { return document.getElementById(id); }
     function toggleSwitch(id) { /* UI only */ }
     function switchPage(p) { document.querySelectorAll('.page-section').forEach(e => e.style.display='none'); $(`page-${p}`).style.display='block'; document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); event.currentTarget.classList.add('active'); if(p==='status') updateStatusUI(); if(p==='warehouse') renderWarehouse(); window.scrollTo(0,0); }
-    function clearCurrentStats() { showConfirm('確定要重置本期所有數據嗎？', () => { const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; db.records[monthKey] = {}; saveDB(db); updateStatusUI(); }, '刪除'); }
-    function exportData() { const db = loadDB(); const blob = new Blob([JSON.stringify(db,null,2)], {type : 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'miles_backup_v12_8.json'; a.click(); }
+    function clearCurrentStats() { showConfirm('確定要重置本期所有數據嗎？', () => { const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; db.records[monthKey] = {}; saveDB(db); updateStatusUI(); }, '刪除', '⚠️ 確認刪除'); }
+    function exportData() { const db = loadDB(); const blob = new Blob([JSON.stringify(db,null,2)], {type : 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'miles_backup_v12_9.json'; a.click(); }
     
     window.onload = function() { 
         updateStatusUI(); 
