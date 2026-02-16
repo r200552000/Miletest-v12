@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TDC環哩匯 x 航空卡消費累哩工具 v12.10 (完美修正版)</title>
+  <title>TDC環哩匯 x 航空卡消費累哩工具 v12.24 (iOS完美相容版)</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Mali:wght@500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,7 +11,7 @@
 
   <style>
     /* =========================
-       CSS 樣式表 (v12.10)
+       CSS 樣式表 (v12.24 Final)
        ========================= */
     :root {
       --bg-main: #fffdf9;
@@ -26,7 +26,6 @@
       --radius-pill: 50px;
       --font-hand: 'Mali', cursive;
       --font-main: 'Varela Round', sans-serif;
-      --nav-height: 80px;
     }
 
     body {
@@ -78,14 +77,33 @@
     .form-control:focus, .form-select:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important; }
     .form-control::placeholder { color: #cbd5e1; font-weight: 500; font-size: 0.9rem; }
     
-    #amount { color: var(--primary) !important; font-size: 1.5rem; letter-spacing: 1px; font-family: var(--font-hand); }
+    #amount { color: var(--primary) !important; font-size: 1.5rem; letter-spacing: 1px; font-family: var(--font-hand); transition: all 0.3s ease; }
     
+    /* Visual Guard Style */
+    .input-negative {
+        color: #ef4444 !important; /* Red */
+        font-weight: 900 !important;
+        font-size: 1.8rem !important; 
+        border-color: #ef4444 !important;
+        background-color: #fef2f2 !important;
+    }
+    .status-label-negative {
+        color: #ef4444;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-top: 4px;
+        font-family: var(--font-hand);
+        display: none; /* Hidden by default */
+        animation: fadeIn 0.2s ease;
+    }
+
     .btn-action { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); color: white; font-weight: 700; border-radius: var(--radius-pill); padding: 14px; width: 100%; border: none; font-size: 1.1rem; font-family: var(--font-hand); box-shadow: 3px 3px 0 rgba(59, 130, 246, 0.25); margin-top: 10px; border: 2px solid #bfdbfe; transition: 0.1s; }
     .btn-action:active { transform: translateY(3px); box-shadow: 0 0 0; }
 
-    .switch-group { background: #f8fafc; padding: 10px 14px; border-radius: 16px; border: 2px solid #e2e8f0; box-shadow: 2px 2px 0 #e2e8f0; display: flex; align-items: center; justify-content: space-between; height: 100%; white-space: nowrap; cursor: pointer; }
+    .switch-group { background: #f8fafc; padding: 10px 14px; border-radius: 16px; border: 2px solid #e2e8f0; box-shadow: 2px 2px 0 #e2e8f0; display: flex; align-items: center; justify-content: space-between; height: 100%; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+    .switch-group:active { transform: translateY(2px); box-shadow: 0 0 0; }
     .switch-label { font-size: 0.85rem; font-weight: 700; color: var(--text-body); font-family: var(--font-hand); margin-right: 4px; display: flex; align-items: center; gap: 6px; }
-    .form-check-input { width: 2.8em; height: 1.5em; background-color: #cbd5e1; border: 2px solid #cbd5e1; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+    .form-check-input { width: 2.8em; height: 1.5em; background-color: #cbd5e1; border: 2px solid #cbd5e1; cursor: pointer; transition: 0.3s; flex-shrink: 0; pointer-events: none; /* Let container handle click */ }
     .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
 
     #result-area { display: none; animation: popUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -101,7 +119,6 @@
     .card-miles { font-size: 1.3rem; color: #34d399; font-weight: 900; font-family: var(--font-hand); }
     .card-tpm { font-size: 0.75rem; color: #94a3b8; font-weight: 700; background: #fff; padding: 2px 8px; border-radius: 10px; display: inline-block; border: 1px solid #e2e8f0; }
 
-    /* Control Buttons in Card */
     .card-actions { margin-top: 10px; display: flex; gap: 8px; }
     .btn-card-action { 
         border: 1px solid #e2e8f0; background: #fff; color: #64748b; 
@@ -164,13 +181,18 @@
     .input-block-card { background: #fff; border: 2px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 2px 2px 0 rgba(0,0,0,0.03); }
     .input-block-title { font-family: var(--font-hand); font-weight: 700; color: #334155; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     
-    /* New Reset Button Style */
     .btn-reset-limit {
         font-size: 0.75rem; color: #64748b; background: white; border: 1px solid #cbd5e1;
         border-radius: 12px; padding: 2px 8px; cursor: pointer; transition: 0.2s;
         margin-left: 8px; display: inline-flex; align-items: center; gap: 4px;
     }
     .btn-reset-limit:hover { background: #f1f5f9; color: var(--primary); border-color: var(--primary); }
+    
+    /* Summary Dashboard Styles */
+    .summary-card { background: white; border: 2px solid #e2e8f0; border-radius: 16px; margin-bottom: 8px; padding: 12px; box-shadow: 2px 2px 0 rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; }
+    .summary-name { font-weight: 800; color: #334155; font-size: 1rem; margin-bottom: 2px; }
+    .summary-spend { font-size: 0.8rem; color: #64748b; font-weight: 600; }
+    .summary-miles { font-weight: 800; color: var(--primary); font-family: var(--font-hand); font-size: 1.1rem; }
   </style>
 </head>
 
@@ -179,8 +201,8 @@
     <div class="d-flex align-items-center">
       <div class="header-icon"><i class="fa-solid fa-plane-departure"></i></div>
       <div class="header-title">
-        <h5>TDC環哩匯 x 航空卡<br>消費累哩工具 v12.10</h5>
-        <small class="text-secondary fw-bold">⚙️ 完美修正版</small>
+        <h5>TDC環哩匯 x 航空卡<br>消費累哩工具 v12.24</h5>
+        <small class="text-secondary fw-bold">⚙️ iOS完美相容版</small>
       </div>
     </div>
     <button class="btn-header" onclick="openSettings()"><i class="fa-solid fa-gear me-1"></i> 設定</button>
@@ -200,13 +222,13 @@
       <div class="card-box">
         <div class="row g-2 mb-3">
           <div class="col-6">
-            <div class="switch-group" onclick="toggleSwitch('birthdayMode')" style="background:#fff1f2; border-color:#fecdd3; box-shadow: 2px 2px 0 #fecdd3;">
+            <div class="switch-group" onclick="toggleSwitch('birthdayMode')" id="switch-box-birthdayMode" style="background:#fff1f2; border-color:#fecdd3; box-shadow: 2px 2px 0 #fecdd3;">
               <span class="switch-label text-danger"><i class="fa-solid fa-cake-candles"></i> 生日月</span>
               <input class="form-check-input" type="checkbox" id="birthdayMode">
             </div>
           </div>
           <div class="col-6">
-            <div class="switch-group" onclick="toggleSwitch('flyMode')" style="background:#ecfdf5; border-color:#a7f3d0; box-shadow: 2px 2px 0 #a7f3d0;">
+            <div class="switch-group" onclick="toggleSwitch('flyMode')" id="switch-box-flyMode" style="background:#ecfdf5; border-color:#a7f3d0; box-shadow: 2px 2px 0 #a7f3d0;">
               <span class="switch-label text-success"><i class="fa-solid fa-ticket"></i> 越飛有哩</span>
               <input class="form-check-input" type="checkbox" id="flyMode">
             </div>
@@ -216,6 +238,7 @@
         <div class="mb-3">
           <label class="form-label text-primary"><i class="fa-solid fa-crosshairs me-1"></i> 累積目標 (航空/計畫)</label>
           <select id="redemption-target" class="form-select border-primary" style="background-color: #eff6ff !important; border-width: 2px;">
+            <option value="ALL">🌏 不指定 (所有航司)</option>
             <option value="AM_BR">🌏 亞萬 / 長榮 (AM / BR)</option>
             <option value="CI">🌸 中華航空 (CI)</option>
           </select>
@@ -250,8 +273,10 @@
         <div class="mb-3 mt-3">
           <label class="form-label" id="amount-label">消費金額 (TWD)</label>
           <div class="input-group">
-            <input type="number" id="amount" class="form-control" placeholder="0" inputmode="decimal" min="0">
+            <button class="btn btn-outline-secondary font-hand fw-bold" type="button" onclick="toggleSign('amount')" style="font-size: 0.9rem; background-color:#f8fafc;">退刷 / 修正</button>
+            <input type="number" id="amount" class="form-control" placeholder="0" inputmode="decimal" oninput="checkInputStyle(this)">
           </div>
+          <div id="amount-status" class="status-label-negative">⚠️ 修正/退刷模式 (沖帳)</div>
         </div>
 
         <div id="fx-input-group" class="mb-3 p-3 rounded-3" style="background: #f0f9ff; border: 2px dashed #bae6fd; display: none;">
@@ -316,11 +341,16 @@
     <!-- Page: Status, Warehouse, Guide -->
     <div id="page-status" class="page-section" style="display:none;">
       <div class="card-box">
-        <h5 class="mb-3 text-primary"><i class="fa-solid fa-chart-pie me-2"></i>本期累積</h5>
+        <h5 class="mb-3 text-primary"><i class="fa-solid fa-chart-pie me-2"></i>本期累積 (待結算總帳)</h5>
         <div id="status-container"></div>
         <div class="mt-3 d-flex gap-2">
            <button onclick="clearCurrentStats()" class="btn btn-sm btn-outline-danger flex-grow-1 rounded-pill fw-bold" style="border-width:2px; font-family:var(--font-hand);">重置本期</button>
-           <button onclick="exportData()" class="btn btn-sm btn-outline-primary flex-grow-1 rounded-pill fw-bold" style="border-width:2px; font-family:var(--font-hand);">匯出 JSON</button>
+           <button onclick="batchImport()" class="btn btn-sm btn-action flex-grow-1 rounded-pill fw-bold py-1" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); border:none; color:white; box-shadow:2px 2px 0 #047857;">
+             <i class="fa-solid fa-rocket me-1"></i> 一鍵進倉
+           </button>
+        </div>
+        <div class="mt-2 text-center">
+           <button onclick="exportData()" class="btn btn-sm btn-link text-primary fw-bold" style="text-decoration:none; font-size:0.85rem;">匯出 JSON</button>
         </div>
         <div class="mt-3 text-center">
              <button onclick="clearCustomRules()" class="btn btn-link btn-sm text-secondary" style="text-decoration:none; font-size:0.8rem;">
@@ -339,14 +369,14 @@
         <div class="input-block-card">
             <div class="input-block-title text-primary"><i class="fa-solid fa-plane"></i> 存入航空哩程 (原生)</div>
             <div class="mb-3"><label class="form-label small mb-1 fw-bold">航司名稱</label><input id="native-airline-name" class="form-control" placeholder="例如: 華航, 長榮 (建議用簡稱)"></div>
-            <div class="mb-3"><label class="form-label small mb-1 fw-bold">目前持有哩程</label><input id="native-current" type="number" class="form-control" placeholder="0" min="0"></div>
+            <div class="mb-3"><label class="form-label small mb-1 fw-bold">目前持有哩程</label><input id="native-current" type="number" class="form-control" placeholder="0"></div>
             <button onclick="addNativeAsset()" class="btn btn-sm btn-outline-primary w-100 rounded-pill fw-bold">存入航空帳戶</button>
         </div>
         <div class="input-block-card">
             <div class="input-block-title text-warning" style="color:#d97706;"><i class="fa-solid fa-right-left"></i> 存入轉點積分 (飯店/銀行)</div>
             <div class="row g-2 mb-2">
                 <div class="col-7"><label class="form-label small mb-1 fw-bold">積分來源</label><input id="trans-source-name" class="form-control" placeholder="如: 萬豪, 小樹點"></div>
-                <div class="col-5"><label class="form-label small mb-1 fw-bold">持有積分</label><input id="trans-current" type="number" class="form-control" placeholder="0" min="0"></div>
+                <div class="col-5"><label class="form-label small mb-1 fw-bold">持有積分</label><input id="trans-current" type="number" class="form-control" placeholder="0"></div>
             </div>
             <div class="mb-2"><label class="form-label small mb-1 fw-bold text-primary">欲兌換之目標航司 (歸戶依據)</label><input id="trans-target-airline" class="form-control" placeholder="例如: 華航, 長榮 (請保持名稱一致)"></div>
             <div class="bg-light p-2 rounded border mb-2">
@@ -362,18 +392,18 @@
     <!-- Guide Page (Updated) -->
     <div id="page-guide" class="page-section" style="display:none;">
         <div class="card-box">
-            <h5 class="mb-4 text-primary"><i class="fa-solid fa-book-open me-2"></i>新手指南 v12.10</h5>
-            <div class="guide-step"><div class="step-num">1</div><div class="step-content"><h6>Zero Config 零設定</h6><p>只要在「設定」啟用卡片，系統會自動在倉庫建立對應的積分/哩程帳戶，無須手動輸入。</p></div></div>
-            <div class="guide-step"><div class="step-num">2</div><div class="step-content"><h6>自由記帳</h6><p>計算完成後，點擊任一張卡片上的「記帳」按鈕即可。若為匯豐 Live+，系統會自動除以 2 換算回積分！</p></div></div>
-            <div class="guide-step"><div class="step-num">3</div><div class="step-content"><h6>額度管理 (最新)</h6><p>在「監控」頁面，您可以點擊每張卡片旁的「🔄 歸零」按鈕，手動重置該卡片的累積額度。</p></div></div>
+            <h5 class="mb-4 text-primary"><i class="fa-solid fa-book-open me-2"></i>新手指南 v12.24</h5>
+            <div class="guide-step"><div class="step-num">1</div><div class="step-content"><h6>總帳模式 (New)</h6><p>監控頁面現在只顯示各卡片的累積總和，畫面更清爽。若需修改單筆錯誤，建議直接輸入負數進行沖帳。</p></div></div>
+            <div class="guide-step"><div class="step-num">2</div><div class="step-content"><h6>實體交易嚴格判定</h6><p>為避免誤判，凡是透過「官網」或「訂房網」的交易，系統會強制視為「線上交易」，即便您誤選實體卡也不會觸發實體加碼。</p></div></div>
+            <div class="guide-step"><div class="step-num">3</div><div class="step-content"><h6>智慧競業排除</h6><p>在華航官網購票時，系統會自動調降他行卡片的回饋率，確保您能看到最正確的華航聯名卡優惠。</p></div></div>
             
             <div class="alert alert-light border mt-4">
-              <h6 class="fw-bold text-primary"><i class="fa-solid fa-rocket me-2"></i>v12.10 版本更新日誌 (完美修正版)</h6>
+              <h6 class="fw-bold text-primary"><i class="fa-solid fa-rocket me-2"></i>v12.24 版本更新日誌 (iOS完美相容版)</h6>
               <ul class="mb-0 ps-3 small text-secondary" style="line-height: 1.6;">
-                <li><strong>強制歸零 (Manual Reset)：</strong>「上限小管家」的每一張卡片現在都有獨立歸零按鈕。</li>
-                <li><strong>額度修正 (Bug Fix)：</strong>刪除記帳紀錄時，會自動退還被佔用的額度。</li>
-                <li><strong>匯豐分流：</strong>Live+ 與旅人積分分開管理。</li>
-                <li><strong>UI 修復：</strong>解決彈窗標題顯示錯誤問題。</li>
+                <li><strong>嚴格實體判定：</strong>修正「國泰官網/華航官網」外幣交易被誤判為「海外實體」的問題。</li>
+                <li><strong>智慧競業排除：</strong>優化推薦邏輯，避免非聯名卡在官網購票時出現錯誤的高回饋。</li>
+                <li><strong>總帳模式：</strong>記帳頁面改為卡片總覽，核對更輕鬆。</li>
+                <li><strong>iOS 按鈕修復：</strong>解決 iPhone 上開關無法點擊的問題。</li>
               </ul>
             </div>
         </div>
@@ -381,10 +411,10 @@
   </div>
 
   <div class="nav-bottom">
-    <div class="nav-item active" onclick="switchPage('calc')"><i class="fa-solid fa-calculator"></i><br>計算</div>
-    <div class="nav-item" onclick="switchPage('status')"><i class="fa-solid fa-chart-simple"></i><br>監控</div>
-    <div class="nav-item" onclick="switchPage('warehouse')"><i class="fa-solid fa-warehouse"></i><br>倉庫</div>
-    <div class="nav-item" onclick="switchPage('guide')"><i class="fa-solid fa-book"></i><br>教學</div>
+    <div class="nav-item active" onclick="switchPage('calc', this)"><i class="fa-solid fa-calculator"></i><br>計算</div>
+    <div class="nav-item" onclick="switchPage('status', this)"><i class="fa-solid fa-chart-simple"></i><br>監控</div>
+    <div class="nav-item" onclick="switchPage('warehouse', this)"><i class="fa-solid fa-warehouse"></i><br>倉庫</div>
+    <div class="nav-item" onclick="switchPage('guide', this)"><i class="fa-solid fa-book"></i><br>教學</div>
   </div>
 
   <!-- Modals -->
@@ -410,7 +440,7 @@
         <div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold">✏️ 修改資產餘額</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
         <div class="modal-body">
             <p class="small text-muted mb-2">正在修改：<span id="edit-asset-name" class="fw-bold text-dark"></span></p>
-            <input type="number" id="edit-asset-val" class="form-control text-center fw-bold fs-4 text-primary" min="0">
+            <input type="number" id="edit-asset-val" class="form-control text-center fw-bold fs-4 text-primary">
         </div>
         <div class="modal-footer border-0 pt-0 d-flex justify-content-center pb-4 gap-2">
             <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">取消</button>
@@ -460,11 +490,12 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     /* =========================
-       哩程攻略 v12.10 (完美修正版)
+       哩程攻略 v12.24 (iOS完美相容版)
        ========================= */
 
-    const DB_UPDATE_DATE = "2026/02/13"; 
+    const DB_UPDATE_DATE = "2026/02/16"; 
 
+    // Builtin Cards
     const BUILTIN_DEFS = [
       { id: 'hsbc_live', name: '匯豐 Live+', default: true, note: '餐飲購物神卡' },
       { id: 'ctbc_ci_inf', name: '中信 華航璀璨無限卡', default: false, note: '指定$10 / 生日$6.6' },
@@ -473,6 +504,7 @@
       { id: 'ctbc_ci',   name: '中信 華航鼎尊卡', default: true, note: '海外實體 $6/哩' }
     ];
 
+    // Auto Assets Logic
     const AUTO_ASSETS = {
         'hsbc_live': { target: '匯豐 Live+ 現金積分', type: 'transfer', ratio: 2, unitPoints:1, unitMiles:2 },
         'hsbc_inf': { target: '匯豐 旅人積分', type: 'transfer', ratio: 1, unitPoints:1, unitMiles:1 },
@@ -483,7 +515,13 @@
 
     const DEFAULT_BILLING = { hsbc:6, ctbc:15, taishin:20, other:1 };
     const RATES = { TWD:1, USD:33.5, JPY:0.225, EUR:36, CNY:4.6, KRW:0.025, THB:0.96, SGD:24.5, other: 1 };
-    const LIVE_KEYWORDS = { 'dining': ['餐廳','吃飯','外送','ubereats','foodpanda','燒肉','火鍋','麻辣','壽司','日式','居酒屋','餐酒館','酒吧','咖啡','甜點','牛排','鐵板燒','拉麵','茶六','屋馬','乾杯','buffet','王品','享鴨','夏慕尼','西堤','石二鍋','陶板屋','青花驕','饗賓','饗饗','開飯','瓦城','鼎泰豐','海底撈','金大鋤','築間','壽司郎','藏壽司','爭鮮','吉兆','明壽司','金色三麥','春大直','貳樓','涓豆腐','hooters','勝田','麥當勞','星巴克','必勝客','達美樂','富王','文公館','教父牛排','山海樓','鹽之華','牡丹','logy','inita','ikea','莫凡彼','貴族世家'], 'shop': ['momo','pchome','蝦皮','shopee','amazon','ebay','露天','friday','gomaji','淘寶','uniqlo','zara','h&m','net','gu','nike','adidas','outlet','台北101','三井','微風','sogo','漢神','華泰','新光','skm','att','美麗華','南紡','統一時代','遠雄','京站','citylink','夢時代','lalaport','高島屋','中友','遠企','麗寶','比漾','大江','巨城','遠東','global mall','環球','義大','台茂','宏匯','義享','noke','大魯閣','明曜','bellavita','寶雅','無印良品','muji','屈臣氏','康是美','松本清','唐吉訶德'], 'entertainment': ['新光影城','威秀','國賓','秀泰','環球影城','迪士尼','吉卜力','樂天世界','legoland','safari','兒童新樂園','x park','小人國','六福村','海洋公園','麗寶樂園','劍湖山','九族','尚順','義大遊樂','巧虎','動物園','海生館','奇美博物館','小叮噹','野柳','埔心','飛牛','頑皮世界','美術館','日月潭','太平山','阿里山','大雪山','墾丁','森林遊樂區'] };
+    
+    // Expanded Keywords & Blocklists
+    const LIVE_KEYWORDS = {
+        'dining': ['餐廳','吃飯','外送','ubereats','foodpanda','燒肉','火鍋','麻辣','壽司','日式','居酒屋','餐酒館','酒吧','咖啡','甜點','牛排','鐵板燒','拉麵','茶六','屋馬','乾杯','buffet','王品','享鴨','夏慕尼','西堤','石二鍋','陶板屋','青花驕','饗賓','饗饗','開飯','瓦城','鼎泰豐','海底撈','金大鋤','築間','壽司郎','藏壽司','爭鮮','吉兆','明壽司','金色三麥','春大直','貳樓','涓豆腐','hooters','勝田','麥當勞','星巴克','必勝客','達美樂','富王','文公館','教父牛排','山海樓','鹽之華','牡丹','logy','inita','ikea','莫凡彼','貴族世家'],
+        'shop': ['momo','pchome','蝦皮','shopee','amazon','ebay','露天','friday','gomaji','淘寶','uniqlo','zara','h&m','net','gu','nike','adidas','outlet','台北101','三井','微風','sogo','漢神','華泰','新光','skm','att','美麗華','南紡','統一時代','遠雄','京站','citylink','夢時代','lalaport','高島屋','中友','遠企','麗寶','比漾','大江','巨城','遠東','global mall','環球','義大','台茂','宏匯','義享','noke','大魯閣','明曜','bellavita','寶雅','無印良品','muji','屈臣氏','康是美','松本清','唐吉訶德'],
+        'entertainment': ['新光影城','威秀','國賓','秀泰','環球影城','迪士尼','吉卜力','樂天世界','legoland','safari','兒童新樂園','x park','小人國','六福村','海洋公園','麗寶樂園','劍湖山','九族','尚順','義大遊樂','巧虎','動物園','海生館','奇美博物館','小叮噹','野柳','埔心','飛牛','頑皮世界','美術館','日月潭','太平山','阿里山','大雪山','墾丁','森林遊樂區']
+    };
     const CTBC_INF_TRAVEL_KEYWORDS = ['agoda','booking','trip','klook','hotels','expedia','airbnb'];
     const CTBC_BOOKING_KEYWORDS = ['agoda','booking','hotels.com','expedia','trip.com','airbnb'];
     const NCCC_FAST_FOOD = ['麥當勞','肯德基','漢堡王','摩斯','頂呱呱','必勝客','達美樂','拿坡里','subway'];
@@ -494,11 +532,119 @@
     const TAISHIN_BLOCK = [...COMMON_BLOCK, '分期','全聯','px','7-11','711','全家','萊爾富','ok超商','繳費','國民年金','etag','三商美邦', ...NCCC_BLACKLIST];
 
     const CARD_RULES = {
-        'ctbc_ci_inf': { name: '中信 華航璀璨無限卡', calc: (ctx) => { if (CTBC_BLOCK.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目</span>' }; if (ctx.isBirthday && ctx.isForeign && ctx.pay === 'physical') { return { miles: Math.floor(ctx.twdBase/6.6), note: '🎂 生日海外實體 $6.6/哩<br><span class="small text-muted">(攻略: 刷60萬拿滿)</span>' }; } const isTravelBooking = CTBC_INF_TRAVEL_KEYWORDS.some(w => ctx.kwKey.includes(w)); if (ctx.cat.startsWith('flight') || ctx.isForeign || isTravelBooking) { return { miles: Math.floor(ctx.twdBase/10), note: '✈️ 指定/海外 $10/哩<br><span class="small text-muted">(攻略: 刷60萬拿滿)</span>' }; } return { miles: Math.floor(ctx.twdBase/20), note: '一般消費 $20/哩' }; } },
-        'hsbc_live': { name: '匯豐 Live+', calc: (ctx) => { if (ctx.isEUR) return { miles:0, note: '<span class="text-danger fw-bold">🚫 歐盟實體不回饋</span>' }; if (HSBC_BLOCK_BASE.some(w => ctx.kwKey.includes(w))) return { miles:0, note: '<span class="text-danger fw-bold">🚫 非回饋項目</span>' }; let displayRate = '0.88%'; let displayType = '一般'; let warning = ''; const hasAutopay = ctx.db.settings.hsbc_autopay; let totalPoints = ctx.twdBase * 0.0088; const isAsian = ['JPY', 'KRW', 'SGD', 'THB', 'CNY'].includes(ctx.curr); if(ctx.isLiveSelect) { displayType = '精選'; displayRate = '3.88%'; let bonus1 = ctx.twdBase * 0.03; if(bonus1 > 888) { bonus1 = 888; warning = '⚠️ 通路加碼已達上限'; } totalPoints += bonus1; let bonus2Rate = 0; if(isAsian) { bonus2Rate = 0.01; displayType = '亞洲精選'; displayRate = '4.88%'; } else if(hasAutopay) { bonus2Rate = 0.01; displayRate = '4.88%'; } if(isAsian && hasAutopay) displayRate = '5.88%'; if(bonus2Rate > 0) { let bonus2 = ctx.twdBase * 0.01; if(bonus2 > 200) { bonus2 = 200; warning = warning ? '⚠️ 雙重加碼已達上限' : '⚠️ 任務加碼已達上限'; } totalPoints += bonus2; } } else { if(hasAutopay) displayRate = '1.88%'; } let n = `${displayType} ${displayRate} <br><span class="text-muted small">1點現金積點⇄2哩</span>`; if(warning) n = `${displayType} (混合費率)<br><span class="warning-badge">${warning}</span>`; return { miles: Math.floor(totalPoints) * 2, note: n }; } },
-        'taishin_cx': { name: '台新 國泰世界', calc: (ctx) => { let isFlyQualifying = false; if (TAISHIN_BLOCK.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目 (稅/費)</span>', isFlyQualifying }; let div = ctx.isForeign ? 15 : 22; let n = `約${div}元/哩`; const isMobilePay = (ctx.pay === 'apple_pay' || ctx.pay === 'line_pay'); if(ctx.cat === 'flight_cx') { if (isMobilePay) { div = 22; n = '⚠️ APP+Pay無$5 (條款排除，僅一般回饋)'; } else if (ctx.isForeign) { div = 15; n = '⚠️ 非台幣付款 (依條款視為海外$15)'; } else { div = 5; isFlyQualifying = true; n = '越飛(官網) $5/哩<br><span class="text-muted small">(依條款收取海外手續費)</span>'; } } else if(ctx.isFlyMode) { if(!isMobilePay && ['agoda','booking','klook','kkday','expedia','hotels','昇恆昌','采盟'].some(w=>ctx.kwKey.includes(w))) { div = 5; isFlyQualifying = true; n = `越飛(指定旅遊) $5/哩`; } else if(!isMobilePay && ctx.isForeign && ctx.pay === 'physical') { div = 5; isFlyQualifying = true; n = `越飛(海外實體) $5/哩`; } } if (ctx.isFlyMode && isMobilePay && ctx.cat !== 'flight_cx') n += ` <span class="text-danger small">(Pay無$5)</span>`; return { miles: Math.floor(ctx.twdBase/div), note: n, isFlyQualifying }; } },
-        'hsbc_inf': { name: '匯豐 旅人無限', calc: (ctx) => { if (HSBC_BLOCK_BASE.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目</span>' }; let div = ctx.cat.startsWith('flight') ? 10 : (ctx.isForeign ? 10 : 18); return { miles: Math.floor(ctx.twdBase/div), note: `約${div}元/哩 (1積分=1哩)` }; } },
-        'ctbc_ci': { name: '中信 華航鼎尊卡', calc: (ctx) => { if (CTBC_BLOCK.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目</span>' }; let div = 18; let n = '一般 $18/哩'; const isCtbcBooking = CTBC_BOOKING_KEYWORDS.some(w => ctx.kwKey.includes(w)); if (ctx.cat === 'flight_ci') { div = 9; n = '華航官網 $9/哩'; } else if (isCtbcBooking) { div = 9; n = '指定訂房網 $9/哩'; } else if(ctx.isForeign && (ctx.pay === 'physical' || ctx.pay === 'apple_pay')) { if(ctx.isBirthday) { div = 6; n = `生日海外實體 $6/哩`; } else { div = 9; n = `海外實體 $9/哩`; } } else if(ctx.isForeign && ctx.pay === 'online') { div = 18; n = '海外網購 $18/哩'; } if(div === 9 || div === 6) n += ` <br><span class="text-danger small" style="font-size:0.7em;">(含加碼上限)</span>`; return { miles: Math.floor(ctx.twdBase/div), note: n }; } }
+        'ctbc_ci_inf': {
+            name: '中信 華航璀璨無限卡',
+            calc: (ctx) => {
+                if (CTBC_BLOCK.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目</span>' };
+                
+                // Strict Physical Check: Flights and Travel are always Online
+                const isInherentlyOnline = ['flight_ci', 'flight_cx', 'flight_other', 'travel'].includes(ctx.cat);
+                const isTruePhysical = !isInherentlyOnline && (ctx.pay === 'physical' || ctx.pay === 'apple_pay');
+
+                if (ctx.isBirthday && ctx.isForeign && isTruePhysical) {
+                    return { miles: Math.trunc(ctx.twdBase/6.6), note: '🎂 生日海外實體 $6.6/哩' };
+                }
+                const isTravelBooking = CTBC_INF_TRAVEL_KEYWORDS.some(w => ctx.kwKey.includes(w));
+                if (ctx.cat.startsWith('flight') || ctx.isForeign || isTravelBooking) {
+                    return { miles: Math.trunc(ctx.twdBase/10), note: '✈️ 指定/海外 $10/哩' };
+                }
+                return { miles: Math.trunc(ctx.twdBase/20), note: '一般消費 $20/哩' };
+            }
+        },
+        'hsbc_live': {
+            name: '匯豐 Live+',
+            calc: (ctx) => {
+                if (ctx.isEUR) return { miles:0, note: '<span class="text-danger fw-bold">🚫 歐盟實體不回饋</span>' };
+                if (HSBC_BLOCK_BASE.some(w => ctx.kwKey.includes(w))) return { miles:0, note: '<span class="text-danger fw-bold">🚫 非回饋項目</span>' };
+                let displayRate = '0.88%'; let displayType = '一般'; let warning = '';
+                const hasAutopay = ctx.db.settings.hsbc_autopay;
+                let totalPoints = ctx.twdBase * 0.0088; 
+                const isAsian = ['JPY', 'KRW', 'SGD', 'THB', 'CNY'].includes(ctx.curr);
+                
+                if(ctx.isLiveSelect) { 
+                    displayType = '精選'; displayRate = '3.88%';
+                    let bonus1 = ctx.twdBase * 0.03;
+                    if(bonus1 > 888) { bonus1 = 888; warning = '⚠️ 通路加碼已達上限'; }
+                    totalPoints += bonus1;
+                    
+                    let bonus2Rate = 0;
+                    if(isAsian) { bonus2Rate = 0.01; displayType = '亞洲精選'; displayRate = '4.88%'; } 
+                    else if(hasAutopay) { bonus2Rate = 0.01; displayRate = '4.88%'; } 
+                    
+                    if(isAsian && hasAutopay) displayRate = '5.88%'; 
+                    if(bonus2Rate > 0) {
+                        let bonus2 = ctx.twdBase * 0.01;
+                        if(bonus2 > 200) { bonus2 = 200; warning = warning ? '⚠️ 雙重加碼已達上限' : '⚠️ 任務加碼已達上限'; }
+                        totalPoints += bonus2;
+                    }
+                } else { if(hasAutopay) displayRate = '1.88%'; }
+                
+                let n = `${displayType} ${displayRate} <br><span class="text-muted small">1點現金積點⇄2哩</span>`;
+                if(warning) n = `${displayType} (混合費率)<br><span class="warning-badge">${warning}</span>`;
+                return { miles: Math.trunc(totalPoints) * 2, note: n };
+            }
+        },
+        'taishin_cx': {
+            name: '台新 國泰世界',
+            calc: (ctx) => {
+                let isFlyQualifying = false;
+                if (TAISHIN_BLOCK.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目 (稅/費)</span>', isFlyQualifying };
+                let div = ctx.isForeign ? 15 : 22; let n = `約${div}元/哩`;
+                const isMobilePay = (ctx.pay === 'apple_pay' || ctx.pay === 'line_pay');
+                
+                if(ctx.cat === 'flight_cx') { 
+                    if (isMobilePay) { div = 22; n = '⚠️ APP+Pay無$5 (條款排除，僅一般回饋)'; } 
+                    else if (ctx.isForeign) { div = 15; n = '⚠️ 非台幣付款 (依條款視為海外$15)'; } 
+                    else { div = 5; isFlyQualifying = true; n = '越飛(官網) $5/哩<br><span class="text-muted small">(依條款收取海外手續費)</span>'; }
+                } else if(ctx.isFlyMode && ctx.cat !== 'flight_ci') { 
+                    if(!isMobilePay && ['agoda','booking','klook','kkday','expedia','hotels','昇恆昌','采盟'].some(w=>ctx.kwKey.includes(w))) { 
+                        div = 5; isFlyQualifying = true; n = `越飛(指定旅遊) $5/哩`; 
+                    } else if(!isMobilePay && ctx.isForeign && ctx.pay === 'physical') { 
+                        div = 5; isFlyQualifying = true; n = `越飛(海外實體) $5/哩`; 
+                    }
+                } 
+                if (ctx.isFlyMode && isMobilePay && ctx.cat !== 'flight_cx') n += ` <span class="text-danger small">(Pay無$5)</span>`;
+                return { miles: Math.trunc(ctx.twdBase/div), note: n, isFlyQualifying };
+            }
+        },
+        'hsbc_inf': {
+            name: '匯豐 旅人無限',
+            calc: (ctx) => {
+                if (HSBC_BLOCK_BASE.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目</span>' };
+                let div = ctx.cat.startsWith('flight') ? 10 : (ctx.isForeign ? 10 : 18);
+                return { miles: Math.trunc(ctx.twdBase/div), note: `約${div}元/哩 (1積分=1哩)` };
+            }
+        },
+        'ctbc_ci': {
+            name: '中信 華航鼎尊卡',
+            calc: (ctx) => {
+                if (CTBC_BLOCK.some(w => ctx.kwKey.includes(w))) return { miles:0, note:'<span class="text-danger fw-bold">🚫 非回饋項目</span>' };
+                
+                // Strict Physical Check: Flights and Travel are always Online
+                const isInherentlyOnline = ['flight_ci', 'flight_cx', 'flight_other', 'travel'].includes(ctx.cat);
+                const isTruePhysical = !isInherentlyOnline && (ctx.pay === 'physical' || ctx.pay === 'apple_pay');
+                
+                let div = 18; let n = '一般 $18/哩';
+                const isCtbcBooking = CTBC_BOOKING_KEYWORDS.some(w => ctx.kwKey.includes(w));
+                
+                if (ctx.cat === 'flight_ci') { div = 9; n = '華航官網 $9/哩'; } 
+                else if (isCtbcBooking) { div = 9; n = '指定訂房網 $9/哩'; }
+                else if(ctx.isForeign) {
+                    // Logic Fix: Only give birthday bonus if it's strictly a physical transaction
+                    if(isTruePhysical) {
+                        if(ctx.isBirthday) { div = 6; n = `生日海外實體 $6/哩`; } 
+                        else { div = 9; n = `海外實體 $9/哩`; }
+                    } else {
+                        // Online or other (even if user selected 'Physical' but cat is flight)
+                        div = 18; n = '海外網購 $18/哩';
+                    }
+                }
+                else if(ctx.isForeign && ctx.pay === 'online') { div = 18; n = '海外網購 $18/哩'; }
+                
+                if(div === 9 || div === 6) n += ` <br><span class="text-danger small" style="font-size:0.7em;">(含加碼上限)</span>`;
+                return { miles: Math.trunc(ctx.twdBase/div), note: n };
+            }
+        }
     };
 
     function showAlert(msg) {
@@ -526,6 +672,35 @@
     const RULES_KEY = 'MILES_APP_RULES';
     let correctionTarget = { id: null, name: null };
     let editAssetTargetIdx = null;
+    let editRecordTargetId = null; 
+    let currentEditRate = 0; 
+
+    function toggleSign(id) {
+        const el = document.getElementById(id);
+        let val = parseFloat(el.value);
+        if(isNaN(val)) val = 0;
+        el.value = val * -1;
+        checkInputStyle(el);
+        if(id === 'edit-rec-spend') autoCalcPoints(el.value);
+    }
+    
+    function toggleSwitch(id) {
+        const checkbox = document.getElementById(id);
+        checkbox.checked = !checkbox.checked;
+    }
+
+    function checkInputStyle(el) {
+        const val = parseFloat(el.value);
+        const statusId = el.id + '-status';
+        const statusEl = document.getElementById(statusId);
+        if(val < 0) {
+            el.classList.add('input-negative');
+            if(statusEl) statusEl.style.display = 'block';
+        } else {
+            el.classList.remove('input-negative');
+            if(statusEl) statusEl.style.display = 'none';
+        }
+    }
 
     function cleanUpOldRecords(db) {
         if (!db.records) return false;
@@ -579,81 +754,129 @@
     function saveRules(data) { localStorage.setItem(RULES_KEY, JSON.stringify(data)); }
 
     function checkCurrency(val) {
-      const label = $('amount-label'); const input = $('amount'); const fxGroup = $('fx-input-group'); const fxRateInput = $('fx-rate-input');
+      const label = document.getElementById('amount-label'); const input = document.getElementById('amount'); const fxGroup = document.getElementById('fx-input-group'); const fxRateInput = document.getElementById('fx-rate-input');
       if (val === 'TWD') { label.innerText = '消費金額 (TWD)'; input.placeholder = '0'; fxGroup.style.display = 'none'; } 
       else { label.innerText = `消費金額 (${val})`; input.placeholder = '外幣金額'; fxGroup.style.display = 'block'; if(RATES[val]) fxRateInput.value = RATES[val]; }
     }
 
     function calculate() {
-      const db = loadDB(); const rules = loadRules();
-      const amt = parseFloat($('amount').value);
-      if(isNaN(amt) || amt <= 0) return showAlert('請輸入大於 0 的有效金額！');
-      
-      const ctx = {
-          db: db, curr: $('currency').value, cat: $('category').value, pay: $('payment').value,
-          kwKey: ($('keyword-input').value || '').trim().toLowerCase(),
-          isBirthday: $('birthdayMode').checked, isFlyMode: $('flyMode').checked,
-          isForeign: $('currency').value !== 'TWD', isEUR: $('currency').value === 'EUR',
-          twdBase: 0, twdSpend: 0, isLiveSelect: false
-      };
+      try {
+          const db = loadDB(); const rules = loadRules();
+          const amt = parseFloat(document.getElementById('amount').value);
+          
+          if(isNaN(amt) || amt === 0) return showAlert('請輸入有效金額 (可為負數進行扣款)！');
+          
+          const target = document.getElementById('redemption-target').value;
 
-      if (ctx.isForeign) {
-          const userRate = parseFloat($('fx-rate-input').value);
-          if(isNaN(userRate) || userRate <= 0) return showAlert('請輸入大於 0 的有效匯率！');
-          ctx.twdBase = Math.round(amt * userRate); ctx.twdSpend = Math.round(ctx.twdBase * 1.015);
-      } else { ctx.twdBase = Math.round(amt); ctx.twdSpend = ctx.twdBase; }
+          const ctx = {
+              db: db, curr: document.getElementById('currency').value, cat: document.getElementById('category').value, pay: document.getElementById('payment').value,
+              kwKey: (document.getElementById('keyword-input').value || '').trim().toLowerCase(),
+              isBirthday: document.getElementById('birthdayMode').checked, 
+              isFlyMode: document.getElementById('flyMode').checked,
+              isForeign: document.getElementById('currency').value !== 'TWD', 
+              isEUR: document.getElementById('currency').value === 'EUR',
+              twdBase: 0, twdSpend: 0, isLiveSelect: false
+          };
 
-      if(ctx.cat === 'dining') ctx.isLiveSelect = true;
-      else if(LIVE_KEYWORDS['dining'].some(w => ctx.kwKey.includes(w)) || LIVE_KEYWORDS['shop'].some(w => ctx.kwKey.includes(w)) || LIVE_KEYWORDS['entertainment'].some(w => ctx.kwKey.includes(w))) ctx.isLiveSelect = true;
-      if(NCCC_FAST_FOOD.some(w => ctx.kwKey.includes(w))) ctx.isLiveSelect = true;
+          if (ctx.isForeign) {
+              const fxInput = document.getElementById('fx-rate-input');
+              // Safety check: ensure element exists and has value
+              if(!fxInput || !fxInput.value) return showAlert('請輸入匯率！');
+              const userRate = parseFloat(fxInput.value);
+              if(isNaN(userRate) || userRate <= 0) return showAlert('請輸入大於 0 的有效匯率！');
+              ctx.twdBase = Math.round(amt * userRate); ctx.twdSpend = Math.round(ctx.twdBase * 1.015);
+          } else { ctx.twdBase = Math.round(amt); ctx.twdSpend = ctx.twdBase; }
 
-      let tags = [];
-      if(ctx.isForeign) tags.push('國外'); if(ctx.pay === 'line_pay') tags.push('LinePay');
-      $('fx-info').style.display = 'block'; $('fx-info').innerHTML = `<div class="small text-muted">本金 NT$${ctx.twdBase.toLocaleString()}</div><div class="fw-bold text-dark">成本 NT$${ctx.twdSpend.toLocaleString()}</div>`;
-      $('scenario-tag').innerText = tags.length ? tags.join(' + ') : '一般消費';
+          if(ctx.cat === 'dining') ctx.isLiveSelect = true;
+          else if(LIVE_KEYWORDS['dining'].some(w => ctx.kwKey.includes(w)) || LIVE_KEYWORDS['shop'].some(w => ctx.kwKey.includes(w)) || LIVE_KEYWORDS['entertainment'].some(w => ctx.kwKey.includes(w))) ctx.isLiveSelect = true;
+          if(NCCC_FAST_FOOD.some(w => ctx.kwKey.includes(w))) ctx.isLiveSelect = true;
 
-      let results = [];
-      function resolveMiles(cardId, defaultCalcFn) {
-         const ruleKey = `${ctx.kwKey}|${cardId}`;
-         if(ctx.kwKey && rules[ruleKey] !== undefined) {
-             const customDiv = rules[ruleKey];
-             if(customDiv === 0) return { miles: 0, note: '🚫 自訂: 無回饋', isCustom: true };
-             return { miles: Math.floor(ctx.twdBase / customDiv), note: `⚙️ 自訂: ${customDiv}元/哩`, isCustom: true };
-         }
-         return defaultCalcFn();
+          let tags = [];
+          if(ctx.isForeign) tags.push('國外'); if(ctx.pay === 'line_pay') tags.push('LinePay');
+          
+          const fxInfo = document.getElementById('fx-info');
+          fxInfo.style.display = 'block'; 
+          fxInfo.innerHTML = `<div class="small text-muted">本金 NT$${ctx.twdBase.toLocaleString()}</div><div class="fw-bold text-dark">成本 NT$${ctx.twdSpend.toLocaleString()}</div>`;
+          
+          document.getElementById('scenario-tag').innerText = tags.length ? tags.join(' + ') : '一般消費';
+
+          let results = [];
+          function resolveMiles(cardId, defaultCalcFn) {
+             const ruleKey = `${ctx.kwKey}|${cardId}`;
+             if(ctx.kwKey && rules[ruleKey] !== undefined) {
+                 const customDiv = rules[ruleKey];
+                 if(customDiv === 0) return { miles: 0, note: '🚫 自訂: 無回饋', isCustom: true };
+                 return { miles: Math.trunc(ctx.twdBase / customDiv), note: `⚙️ 自訂: ${customDiv}元/哩`, isCustom: true };
+             }
+             return defaultCalcFn();
+          }
+
+          db.settings.enabledBuiltins.forEach(cardId => {
+              if (target !== 'ALL') {
+                  if(target === 'CI' && cardId === 'taishin_cx') return; 
+                  if(target === 'AM_BR' && (cardId === 'ctbc_ci' || cardId === 'ctbc_ci_inf')) return; 
+              }
+              if(CARD_RULES[cardId]) { results.push({ id: cardId, name: CARD_RULES[cardId].name, ...resolveMiles(cardId, () => CARD_RULES[cardId].calc(ctx)) }); }
+          });
+          db.customCards.forEach(c => {
+             results.push({ id: c.id, name: c.name, ...resolveMiles(c.id, () => { let div = ctx.isForeign ? c.forRate : c.domRate; if(!div || div <= 0) div = 999; return { miles: Math.trunc(ctx.twdBase / div), note: `設定${div}元/哩` }; }), type: 'custom' });
+          });
+
+          results.forEach(r => { r.tpm = r.miles > 0 ? (ctx.twdSpend / r.miles) : 999; });
+          
+          if (amt < 0) {
+              results.sort((a,b) => a.miles - b.miles);
+          } else {
+              results.sort((a,b) => b.miles - a.miles);
+          }
+          
+          window.currentResults = results.map(r => ({ ...r, twdSpend: ctx.twdSpend, twdBase: ctx.twdBase, isFlyQualifying: r.isFlyQualifying }));
+          renderResults(results, ctx.twdSpend);
+      } catch (e) {
+          console.error(e);
+          showAlert('系統發生錯誤，請稍後再試。\n錯誤代碼: ' + e.message);
       }
-
-      db.settings.enabledBuiltins.forEach(cardId => {
-          if(CARD_RULES[cardId]) { results.push({ id: cardId, name: CARD_RULES[cardId].name, ...resolveMiles(cardId, () => CARD_RULES[cardId].calc(ctx)) }); }
-      });
-      db.customCards.forEach(c => {
-         results.push({ id: c.id, name: c.name, ...resolveMiles(c.id, () => { let div = ctx.isForeign ? c.forRate : c.domRate; if(!div || div <= 0) div = 999; return { miles: Math.floor(ctx.twdBase / div), note: `設定${div}元/哩` }; }), type: 'custom' });
-      });
-
-      results.forEach(r => { r.tpm = r.miles > 0 ? (ctx.twdSpend / r.miles) : 999; });
-      results.sort((a,b) => b.miles - a.miles);
-      window.currentResults = results.map(r => ({ ...r, twdSpend: ctx.twdSpend, twdBase: ctx.twdBase, isFlyQualifying: r.isFlyQualifying }));
-      renderResults(results, ctx.twdSpend);
     }
 
     function renderResults(list, spend) {
-      const con = $('cards-container'); con.innerHTML = ''; $('result-area').style.display = 'block';
-      if(list.length === 0) { con.innerHTML = '<div class="text-center p-3 text-muted">沒有啟用的卡片</div>'; return; }
+      const con = document.getElementById('cards-container'); 
+      con.innerHTML = ''; 
+      document.getElementById('result-area').style.display = 'block';
+      
+      if(list.length === 0) { con.innerHTML = '<div class="text-center p-3 text-muted">沒有符合目標的卡片</div>'; return; }
+      
       list.forEach((c, idx) => {
-        const isWinner = idx === 0; const div = document.createElement('div'); div.className = `plan-card ${isWinner ? 'plan-winner' : ''}`;
+        const isWinner = idx === 0; 
+        const div = document.createElement('div'); 
+        div.className = `plan-card ${isWinner ? 'plan-winner' : ''}`;
         let badge = isWinner ? `<span class="winner-badge"><i class="fa-solid fa-crown"></i> WINNER</span>` : '';
         let customTag = c.isCustom ? '<span class="custom-rule-tag">自訂規則</span>' : '';
-        let recordBtnClass = isWinner ? 'btn-record-win' : 'btn-record'; let recordBtnIcon = isWinner ? '🏆' : '📝';
-        div.innerHTML = `${badge}<div class="d-flex justify-content-between align-items-center"><div><div class="d-flex align-items-center mb-1"><h4 class="card-name mb-0">${c.name}</h4>${customTag}</div><div class="text-muted small font-hand">${c.note}</div><div class="card-actions"><button class="btn-card-action ${recordBtnClass}" onclick="confirmRecord(${idx})">${recordBtnIcon} 記帳</button><button class="btn-correct" onclick="openCorrection('${c.id}','${c.name}')"><i class="fa-solid fa-pen"></i> 修正</button></div></div><div class="text-end"><div class="card-miles">${c.miles.toLocaleString()} <small style="font-size:0.5em; color:#64748b;">哩</small></div><div class="card-tpm">${c.tpm < 200 ? c.tpm.toFixed(1) : '>200'} 元/哩</div></div></div>`;
+        let recordBtnClass = isWinner ? 'btn-record-win' : 'btn-record'; 
+        let recordBtnIcon = isWinner ? '🏆' : '📝';
+        
+        div.innerHTML = `
+        ${badge}
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="d-flex align-items-center mb-1"><h4 class="card-name mb-0">${c.name}</h4>${customTag}</div>
+                <div class="text-muted small font-hand">${c.note}</div>
+                <div class="card-actions">
+                    <button class="btn-card-action ${recordBtnClass}" onclick="confirmRecord(${idx})">${recordBtnIcon} 記帳</button>
+                    <button class="btn-correct" onclick="openCorrection('${c.id}','${c.name}')"><i class="fa-solid fa-pen"></i> 修正</button>
+                </div>
+            </div>
+            <div class="text-end">
+                <div class="card-miles">${c.miles.toLocaleString()} <small style="font-size:0.5em; color:#64748b;">哩</small></div>
+                <div class="card-tpm">${Math.abs(c.tpm) < 200 ? Math.abs(c.tpm).toFixed(1) : '>200'} 元/哩</div>
+            </div>
+        </div>`;
         con.appendChild(div);
       });
     }
 
-    // Helper: Generate Standard Limit Key
     function getLimitKeyHelper(db, id, dateObj) {
-        if(id === 'taishin_cx') {
-            return `${dateObj.getFullYear()}-${id}`;
-        } else {
+        if(id === 'taishin_cx') { return `${dateObj.getFullYear()}-${id}`; } 
+        else {
             let day = db.settings.billingDays[id.split('_')[0]] || db.settings.billingDays['other'] || 1;
             const monthOffset = (dateObj.getDate() > day) ? 1 : 0;
             const d = new Date(dateObj.getFullYear(), dateObj.getMonth() + monthOffset, 1);
@@ -661,130 +884,124 @@
         }
     }
 
-    // 🌟 Bug Fix (v12.10): Deleting record subtracts from limit
-    function delHistoryRecord(id) {
-        const db = loadDB(); 
-        const now = new Date(); 
-        const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; 
-        
-        if (db.records[monthKey] && db.records[monthKey][id]) {
-            const rec = db.records[monthKey][id];
-            
-            showConfirm(`確定要刪除這筆紀錄嗎？\n(將同步退還 $${rec.spend.toLocaleString()} 額度)`, () => { 
-                // Reversal Logic
-                const limitKey = getLimitKeyHelper(db, id, now);
-                if(db.limits[limitKey]) {
-                    // Only deduct spend if it was added (Taishin conditional)
-                    // Simplified: We assume spend was added. For perfection we'd need to store 'spendAdded' flag, but deduction is safe.
-                    db.limits[limitKey].spend = Math.max(0, db.limits[limitKey].spend - rec.spend);
-                    db.limits[limitKey].points = Math.max(0, db.limits[limitKey].points - rec.miles);
-                }
+    function confirmRecord(resultIdx) {
+      const resultData = window.currentResults[resultIdx]; if(!resultData) return;
+      const { id, name, miles, twdSpend, twdBase, isFlyQualifying } = resultData;
+      let pointsToSave = miles; let unitText = '哩';
+      if(id === 'hsbc_live') { pointsToSave = Math.trunc(miles / 2); unitText = '積分'; } else if (id === 'hsbc_inf') { unitText = '積分'; }
 
-                delete db.records[monthKey][id]; 
-                saveDB(db); 
-                updateStatusUI(); 
-            }, '刪除', '⚠️ 確認刪除');
-        }
+      showConfirm(`確定記帳？\n卡片：${name}\n累積：${pointsToSave} ${unitText} (未入庫)\n成本：$${twdSpend}`, () => {
+          const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+          if(!db.records[monthKey]) db.records[monthKey] = {};
+          const recordId = `${id}_${Date.now()}`;
+          db.records[monthKey][recordId] = { id: id, miles: pointsToSave, spend: twdBase, name: name, unit: unitText }; 
+
+          const limitKey = getLimitKeyHelper(db, id, now);
+          if(!db.limits[limitKey]) db.limits[limitKey] = { spend:0, points:0 };
+          let shouldAddSpend = true;
+          if(id === 'taishin_cx' && !isFlyQualifying) shouldAddSpend = false;
+          if(shouldAddSpend) db.limits[limitKey].spend += twdBase; 
+          db.limits[limitKey].points += pointsToSave;
+          saveDB(db); updateStatusUI(); 
+      }, '確認記帳', '📝 確認記帳');
     }
 
-    // 🌟 Bug Fix (v12.10): Clear Stats also clears limits
-    function clearCurrentStats() { 
-        showConfirm('確定要重置本期所有數據嗎？\n(這會將本月相關的額度全部退還)', () => { 
-            const db = loadDB(); 
-            const now = new Date(); 
-            const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; 
-            
-            if(db.records[monthKey]) {
-                // Iterate and reverse all
-                for(let id in db.records[monthKey]) {
-                    const rec = db.records[monthKey][id];
-                    const limitKey = getLimitKeyHelper(db, id, now);
-                    if(db.limits[limitKey]) {
-                        db.limits[limitKey].spend = Math.max(0, db.limits[limitKey].spend - rec.spend);
-                        db.limits[limitKey].points = Math.max(0, db.limits[limitKey].points - rec.miles);
+    function batchImport() {
+        const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        if(!db.records[monthKey] || Object.keys(db.records[monthKey]).length === 0) { return showAlert('目前沒有待結算的紀錄！'); }
+        let importCount = 0; let totalPoints = 0;
+        showConfirm('確定要執行「一鍵進倉」嗎？\n系統將自動歸戶並清空待結算清單。', () => {
+            for(let key in db.records[monthKey]) {
+                const rec = db.records[monthKey][key];
+                const autoRule = AUTO_ASSETS[rec.id];
+                if(autoRule) {
+                    let targetAsset = db.warehouse.find(a => a.targetAirline === autoRule.target);
+                    if(targetAsset) { 
+                        targetAsset.current = parseFloat(targetAsset.current) + rec.miles; 
+                        importCount++; 
+                        totalPoints += rec.miles; 
                     }
                 }
-                db.records[monthKey] = {}; 
-                saveDB(db); 
-                updateStatusUI(); 
+            }
+            db.records[monthKey] = {}; saveDB(db); updateStatusUI(); renderWarehouse(); showAlert(`✅ 結算完成！\n共 ${importCount} 筆紀錄已存入倉庫。`);
+        }, '一鍵進倉', '🚀 確認進倉');
+    }
+
+    function clearCurrentStats() { 
+        showConfirm('確定要重置本期所有數據嗎？\n(這會將本月相關的額度全部退還)', () => { 
+            const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+            if(db.records[monthKey]) {
+                for(let id in db.records[monthKey]) {
+                    const rec = db.records[monthKey][id];
+                    const limitKey = getLimitKeyHelper(db, rec.id, now);
+                    if(db.limits[limitKey]) { 
+                        db.limits[limitKey].spend -= rec.spend; 
+                        db.limits[limitKey].points -= rec.miles; 
+                        if(db.limits[limitKey].spend < 0) db.limits[limitKey].spend = 0; 
+                    }
+                }
+                db.records[monthKey] = {}; saveDB(db); updateStatusUI(); 
             }
         }, '刪除', '⚠️ 確認重置'); 
     }
 
-    // 🌟 New Feature (v12.10): Manual Reset Limit
-    function resetOneLimit(limitKey) {
-        showConfirm('確定要將此卡片的累積額度歸零嗎？\n(不會刪除歷史記帳明細)', () => {
-            const db = loadDB();
-            if(db.limits[limitKey]) {
-                db.limits[limitKey].spend = 0;
-                db.limits[limitKey].points = 0;
-                saveDB(db);
-                updateStatusUI();
-            }
-        }, '歸零', '🔄 確認歸零');
+    function switchPage(p, btn) {
+        document.querySelectorAll('.page-section').forEach(e => e.style.display='none'); 
+        document.getElementById(`page-${p}`).style.display='block'; 
+        
+        document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); 
+        if(btn) btn.classList.add('active'); 
+        
+        if(p==='status') updateStatusUI(); 
+        if(p==='warehouse') renderWarehouse(); 
+        window.scrollTo(0,0); 
     }
 
-    function recordResult(resultIdx) { /* Logic handled by confirmRecord */ }
-    
-    function confirmRecord(resultIdx) {
-      const resultData = window.currentResults[resultIdx]; if(!resultData) return;
-      const { id, name, miles, twdSpend, twdBase, isFlyQualifying } = resultData;
-      let extraNote = ''; const autoRule = AUTO_ASSETS[id];
-      if(autoRule) { if(id === 'hsbc_live') { extraNote = `<br><span class="text-primary small">(智慧換算: ${miles}哩 ÷ 2 = ${Math.round(miles/2)}積分)</span>`; } else { extraNote = `<br><span class="text-primary small">(將存入: ${autoRule.target})</span>`; } }
+    function resetOneLimit(limitKey) { showConfirm('確定要將此卡片的累積額度歸零嗎？\n(不會刪除歷史記帳明細)', () => { const db = loadDB(); if(db.limits[limitKey]) { db.limits[limitKey].spend = 0; db.limits[limitKey].points = 0; saveDB(db); updateStatusUI(); } }, '歸零', '🔄 確認歸零'); }
 
-      showConfirm(`確定記帳？\n卡片：${name}\n累積：${miles} 哩\n成本：$${twdSpend}${extraNote}`, () => {
-          const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-          if(!db.records[monthKey]) db.records[monthKey] = {};
-          // Use timestamp to allow multiple records for same card in same month
-          const recordId = `${id}_${Date.now()}`;
-          db.records[monthKey][recordId] = { id: id, miles: miles, spend: twdBase, name: name }; // Store Base for limit
-
-          const limitKey = getLimitKeyHelper(db, id, now);
-          if(!db.limits[limitKey]) db.limits[limitKey] = { spend:0, points:0 };
-          
-          let shouldAddSpend = true;
-          if(id === 'taishin_cx' && !isFlyQualifying) shouldAddSpend = false;
-          if(shouldAddSpend) db.limits[limitKey].spend += twdBase; 
-          db.limits[limitKey].points += miles;
-          
-          if(autoRule) {
-              let targetAsset = db.warehouse.find(a => a.targetAirline === autoRule.target);
-              if(targetAsset) {
-                  let pointsToAdd = miles;
-                  if(id === 'hsbc_live') { pointsToAdd = Math.round(miles / 2); } 
-                  targetAsset.current = parseFloat(targetAsset.current) + pointsToAdd;
-              }
-          }
-          saveDB(db); updateStatusUI(); renderWarehouse();
-      }, '確認記帳', '📝 確認記帳');
-    }
-
+    // Summary Dashboard Mode
     function updateStatusUI() {
       const db = loadDB(); const now = new Date(); const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-      const statusCon = $('status-container'); const monthData = db.records[monthKey] || {};
+      const statusCon = document.getElementById('status-container'); 
+      const monthData = db.records[monthKey] || {};
+      
+      // Aggregation Logic
+      const agg = {};
+      for(let key in monthData) {
+          const r = monthData[key];
+          if(!agg[r.id]) { agg[r.id] = { name: r.name, spend: 0, miles: 0, unit: r.unit }; }
+          agg[r.id].spend += r.spend;
+          agg[r.id].miles += r.miles;
+      }
+
       let html = '';
-      if(Object.keys(monthData).length === 0) html = '<div class="text-center py-3 text-muted">本月尚無紀錄</div>';
+      if(Object.keys(agg).length === 0) html = '<div class="text-center py-3 text-muted">本月尚無紀錄 (待結算)</div>';
       else {
-        html = '<ul class="list-group list-group-flush">';
-        for(let key in monthData) { 
-            const rec = monthData[key];
-            html += `<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0 border-bottom border-dashed"><span class="fw-bold text-secondary">${rec.name}</span><div class="d-flex align-items-center"><span class="fw-bold text-primary me-3" style="font-family:var(--font-hand);">+${rec.miles}</span><i class="fa-solid fa-trash-can text-muted" style="cursor:pointer; font-size:0.9rem;" onclick="delHistoryRecord('${key}')"></i></div></li>`; 
+        html = '<div>';
+        for(let id in agg) {
+            const item = agg[id];
+            const isSpendNeg = item.spend < 0;
+            html += `
+            <div class="summary-card">
+                <div>
+                    <div class="summary-name">${item.name}</div>
+                    <div class="summary-spend ${isSpendNeg?'text-danger':''}">$${item.spend.toLocaleString()}</div>
+                </div>
+                <div class="text-end">
+                    <div class="summary-miles">${item.miles.toLocaleString()} <small class="text-secondary" style="font-size:0.6em">${item.unit}</small></div>
+                </div>
+            </div>`;
         }
-        html += '</ul>';
+        html += '</div>';
       }
       statusCon.innerHTML = html;
 
-      const limitsCon = $('limits-container'); let limitHtml = '';
-      
-      // 🌟 Enhanced Limits Loop: Iterate ALL cards (Builtin + Custom)
+      // Limit Bar Logic
+      const limitsCon = document.getElementById('limits-container'); 
+      let limitHtml = '';
       let allCards = [];
-      db.settings.enabledBuiltins.forEach(id => {
-          const def = BUILTIN_DEFS.find(d => d.id === id);
-          if(def) allCards.push({ id: def.id, name: def.name, limit: getCardLimit(def.id) });
-      });
-      db.customCards.forEach(c => {
-          allCards.push({ id: c.id, name: c.name, limit: 999999 }); // Default high limit for custom
-      });
+      db.settings.enabledBuiltins.forEach(id => { const def = BUILTIN_DEFS.find(d => d.id === id); if(def) allCards.push({ id: def.id, name: def.name, limit: getCardLimit(def.id) }); });
+      db.customCards.forEach(c => { allCards.push({ id: c.id, name: c.name, limit: 999999 }); });
 
       if (allCards.length === 0) limitHtml = '<div class="text-center text-muted small py-2">無監控中的卡片，請至設定開啟</div>';
       else {
@@ -792,68 +1009,115 @@
               const limitKey = getLimitKeyHelper(db, card.id, now);
               const record = db.limits[limitKey] || { spend:0 };
               const current = record.spend;
-              // Determine limit display
               let limitDisplay = card.limit === 999999 ? '∞' : `$${card.limit.toLocaleString()}`;
               let pct = card.limit === 999999 ? 0 : Math.min(100, Math.round((current / card.limit) * 100));
               let color = pct > 80 ? (pct>=100?'bg-danger':'bg-warning') : 'bg-success';
-              
-              limitHtml += `
-              <div class="mb-3">
-                <div class="d-flex justify-content-between small mb-1 align-items-center">
-                    <div><strong>${card.name}</strong></div>
-                    <div class="d-flex align-items-center">
-                        <span class="me-2">$${current.toLocaleString()} / ${limitDisplay}</span>
-                        <button class="btn-reset-limit" onclick="resetOneLimit('${limitKey}')"><i class="fa-solid fa-rotate-right"></i></button>
-                    </div>
-                </div>
-                <div class="progress" style="height: 8px; border-radius:4px; background:#e2e8f0;">
-                  <div class="progress-bar ${color}" style="width: ${pct}%;"></div>
-                </div>
-              </div>`;
+              limitHtml += `<div class="mb-3"><div class="d-flex justify-content-between small mb-1 align-items-center"><div><strong>${card.name}</strong></div><div class="d-flex align-items-center"><span class="me-2">$${current.toLocaleString()} / ${limitDisplay}</span><button class="btn-reset-limit" onclick="resetOneLimit('${limitKey}')"><i class="fa-solid fa-rotate-right"></i></button></div></div><div class="progress" style="height: 8px; border-radius:4px; background:#e2e8f0;"><div class="progress-bar ${color}" style="width: ${pct}%;"></div></div></div>`;
           });
       }
       limitsCon.innerHTML = limitHtml;
     }
 
-    function getCardLimit(id) {
-        if(id === 'hsbc_live') return 29600;
-        if(id === 'ctbc_ci_inf') return 600000;
-        if(id === 'taishin_cx') return 1000000;
-        if(id === 'ctbc_ci') return 1440000;
-        return 999999;
-    }
+    function getCardLimit(id) { if(id === 'hsbc_live') return 29600; if(id === 'ctbc_ci_inf') return 600000; if(id === 'taishin_cx') return 1000000; if(id === 'ctbc_ci') return 1440000; return 999999; }
 
-    // ... (Remaining unchanged functions from v12.9) ...
     function openSettings() { renderSettings(); const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal')); m.show(); }
     function renderSettings() {
-      const db = loadDB(); $('setting-hsbc-autopay').checked = db.settings.hsbc_autopay;
-      const builtinCon = $('builtin-cards-list'); builtinCon.innerHTML = '';
-      BUILTIN_DEFS.forEach(def => { const isOn = db.settings.enabledBuiltins.includes(def.id); builtinCon.innerHTML += `<div class="switch-group mb-2"><span class="switch-label">${def.name} <small class="text-muted">(${def.note})</small></span><input class="form-check-input" type="checkbox" ${isOn?'checked':''} onchange="toggleBuiltin('${def.id}')"></div>`; });
-      const customCon = $('custom-cards-list'); customCon.innerHTML = ''; if(db.customCards.length === 0) customCon.innerHTML = '<div class="text-muted small text-center mb-2">尚無自訂卡片</div>';
-      db.customCards.forEach((c, idx) => { customCon.innerHTML += `<div class="custom-card-item"><div><div class="fw-bold">${c.name}</div><div class="small text-muted">國內 ${c.domRate} / 國外 ${c.forRate}</div></div><div class="delete-btn" onclick="delCustomCard(${idx})"><i class="fa-solid fa-trash"></i></div></div>`; });
-      const billCon = $('billing-days-list'); billCon.innerHTML = ''; const banks = { hsbc:'匯豐', ctbc:'中信', taishin:'台新', other:'其他' };
-      for(let key in banks) { billCon.innerHTML += `<div class="d-flex justify-content-between align-items-center mb-2 bg-white p-2 rounded border"><span class="fw-bold text-secondary font-hand">${banks[key]}</span><input type="number" class="form-control form-control-sm w-25 text-center" value="${db.settings.billingDays[key]||1}" min="1" max="31" onchange="updateBilling('${key}', this.value)"></div>`; }
+      const db = loadDB(); document.getElementById('setting-hsbc-autopay').checked = db.settings.hsbc_autopay;
+      const builtinCon = document.getElementById('builtin-cards-list'); builtinCon.innerHTML = ''; BUILTIN_DEFS.forEach(def => { const isOn = db.settings.enabledBuiltins.includes(def.id); builtinCon.innerHTML += `<div class="switch-group mb-2"><span class="switch-label">${def.name} <small class="text-muted">(${def.note})</small></span><input class="form-check-input" type="checkbox" ${isOn?'checked':''} onchange="toggleBuiltin('${def.id}')"></div>`; });
+      const customCon = document.getElementById('custom-cards-list'); customCon.innerHTML = ''; if(db.customCards.length === 0) customCon.innerHTML = '<div class="text-muted small text-center mb-2">尚無自訂卡片</div>'; db.customCards.forEach((c, idx) => { customCon.innerHTML += `<div class="custom-card-item"><div><div class="fw-bold">${c.name}</div><div class="small text-muted">國內 ${c.domRate} / 國外 ${c.forRate}</div></div><div class="delete-btn" onclick="delCustomCard(${idx})"><i class="fa-solid fa-trash"></i></div></div>`; });
+      const billCon = document.getElementById('billing-days-list'); billCon.innerHTML = ''; const banks = { hsbc:'匯豐', ctbc:'中信', taishin:'台新', other:'其他' }; for(let key in banks) { billCon.innerHTML += `<div class="d-flex justify-content-between align-items-center mb-2 bg-white p-2 rounded border"><span class="fw-bold text-secondary font-hand">${banks[key]}</span><input type="number" class="form-control form-control-sm w-25 text-center" value="${db.settings.billingDays[key]||1}" min="1" max="31" onchange="updateBilling('${key}', this.value)"></div>`; }
     }
     function updateGlobalSetting(key, val) { const db = loadDB(); db.settings[key] = val; saveDB(db); }
     function toggleBuiltin(id) { const db = loadDB(); const idx = db.settings.enabledBuiltins.indexOf(id); if(idx >= 0) db.settings.enabledBuiltins.splice(idx, 1); else db.settings.enabledBuiltins.push(id); saveDB(db); updateStatusUI(); }
-    function addCustomCard() { const name = $('new-card-name').value; const dom = parseFloat($('new-card-dom').value); const fore = parseFloat($('new-card-for').value); if(!name || isNaN(dom) || isNaN(fore)) return showAlert('請填寫完整'); if(dom <= 0 || fore <= 0) return showAlert('費率不可為零或負數'); const db = loadDB(); db.customCards.push({ id: `cust_${Date.now()}`, name, domRate: dom, forRate: fore }); saveDB(db); renderSettings(); $('new-card-name').value = ''; $('new-card-dom').value = ''; $('new-card-for').value = ''; }
+    function addCustomCard() { const name = document.getElementById('new-card-name').value; const dom = parseFloat(document.getElementById('new-card-dom').value); const fore = parseFloat(document.getElementById('new-card-for').value); if(!name || isNaN(dom) || isNaN(fore)) return showAlert('請填寫完整'); if(dom <= 0 || fore <= 0) return showAlert('費率不可為零或負數'); const db = loadDB(); db.customCards.push({ id: `cust_${Date.now()}`, name, domRate: dom, forRate: fore }); saveDB(db); renderSettings(); document.getElementById('new-card-name').value = ''; document.getElementById('new-card-dom').value = ''; document.getElementById('new-card-for').value = ''; }
     function delCustomCard(idx) { showConfirm('確定要刪除這張自訂卡片嗎？', () => { const db = loadDB(); db.customCards.splice(idx, 1); saveDB(db); renderSettings(); }, '刪除', '⚠️ 確認刪除'); }
     function updateBilling(key, val) { const v=parseInt(val); if(v<1 || v>31) return showAlert('結帳日需介於1~31之間'); const db = loadDB(); db.settings.billingDays[key] = v || 1; saveDB(db); updateStatusUI(); }
     function $(id) { return document.getElementById(id); }
-    function toggleSwitch(id) { /* UI only */ }
-    function switchPage(p) { document.querySelectorAll('.page-section').forEach(e => e.style.display='none'); $(`page-${p}`).style.display='block'; document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active')); event.currentTarget.classList.add('active'); if(p==='status') updateStatusUI(); if(p==='warehouse') renderWarehouse(); window.scrollTo(0,0); }
-    function exportData() { const db = loadDB(); const blob = new Blob([JSON.stringify(db,null,2)], {type : 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'miles_backup_v12_10.json'; a.click(); }
-    function renderWarehouse() { /* (Keep same as v12.9) */ const db = loadDB(); const con = $('warehouse-list'); con.innerHTML = ''; if(db.warehouse.length === 0) { con.innerHTML = '<div class="text-center text-muted py-4">尚無資產，請確認已啟用卡片</div>'; return; } const groups = {}; db.warehouse.forEach((asset, index) => { const key = asset.targetAirline.trim().toUpperCase(); if(!groups[key]) groups[key] = { totalEffective: 0, assets: [], target: db.airlineGoals[key] || 0 }; let effective = 0; const current = parseFloat(asset.current); if(asset.type === 'airline') { effective = current; } else { const uPoints = parseFloat(asset.unitPoints) || parseFloat(asset.ratio) || 1; const uMiles = parseFloat(asset.unitMiles) || 1; const blocks = Math.floor(current / uPoints); effective = blocks * uMiles; if(asset.bonusThres > 0 && asset.bonusVal > 0) { const bonusCount = Math.floor(current / asset.bonusThres); effective += (bonusCount * asset.bonusVal); } } groups[key].totalEffective += effective; groups[key].assets.push({ ...asset, originalIndex: index, effective }); }); for (const [airline, group] of Object.entries(groups)) { const pct = group.target > 0 ? Math.min(100, Math.round((group.totalEffective / group.target) * 100)) : 0; const color = pct >= 100 ? 'bg-success' : (pct >= 80 ? 'bg-warning' : 'bg-primary'); const remaining = Math.max(0, group.target - group.totalEffective); let assetsHtml = ''; group.assets.forEach(a => { let formulaText = a.type !== 'airline' ? `<small class="text-muted d-block" style="font-size:0.7rem;">(${a.unitPoints||a.ratio||1}點=${a.unitMiles||1}哩)</small>` : ''; assetsHtml += `<div class="asset-item"><div class="asset-info"><span class="asset-name">${a.name}</span><span class="asset-detail">持有 ${parseInt(a.current).toLocaleString()} ${a.type!=='airline'?'點':''}</span>${formulaText}</div><div class="d-flex align-items-center"><i class="fa-solid fa-pen btn-asset-edit me-2" onclick="openEditAsset(${a.originalIndex})"></i><span class="asset-value me-2">${a.effective.toLocaleString()} 哩</span><i class="fa-solid fa-trash-can btn-asset-del" onclick="delWarehouseAsset(${a.originalIndex})"></i></div></div>`; }); con.innerHTML += `<div class="airline-group-card"><div class="airline-header"><div class="airline-title"><i class="fa-solid fa-plane-up me-2"></i>${airline}</div><div class="airline-total">${group.totalEffective.toLocaleString()} 哩</div></div><div class="airline-body"><div class="target-input-group"><label class="small fw-bold mb-0 text-nowrap">目標:</label><input type="number" class="form-control form-control-sm border-0 bg-transparent fw-bold text-end" value="${group.target > 0 ? group.target : ''}" placeholder="設定目標" min="0" onchange="updateAirlineGoal('${airline}', this.value)"></div><div class="progress mb-2" style="height: 8px; border-radius: 4px; background: #e2e8f0;"><div class="progress-bar ${color}" style="width: ${pct}%"></div></div><div class="text-end small text-muted fw-bold mb-3">${group.target > 0 ? (pct>=100 ? '🎉 目標達成！' : `還差 ${remaining.toLocaleString()} 哩`) : '請設定目標'}</div><div class="assets-list">${assetsHtml}</div></div></div>`; } }
-    function addNativeAsset() { const name = $('native-airline-name').value.trim(); const current = parseFloat($('native-current').value); if(!name || isNaN(current)) return showAlert('請填寫完整資訊'); if(current < 0) return showAlert('哩程不能為負數！'); const db = loadDB(); db.warehouse.push({ type: 'airline', targetAirline: name, name: name + ' (帳戶)', current, ratio: 1, bonusThres: 0, bonusVal: 0 }); saveDB(db); $('native-airline-name').value = ''; $('native-current').value = ''; renderWarehouse(); }
-    function addTransferAsset() { const name = $('trans-source-name').value; const targetAirline = $('trans-target-airline').value.trim(); const current = parseFloat($('trans-current').value); const unitPoints = parseFloat($('trans-unit-points').value); const unitMiles = parseFloat($('trans-unit-miles').value); const bonusThres = parseFloat($('trans-bonus-thres').value) || 0; const bonusVal = parseFloat($('trans-bonus-val').value) || 0; if(!name || !targetAirline || isNaN(current) || isNaN(unitPoints) || isNaN(unitMiles)) return showAlert('請填寫完整資訊 (包含兌換公式)'); if(current < 0 || unitPoints <= 0 || unitMiles < 0 || bonusThres < 0 || bonusVal < 0) return showAlert('積分與兌換數值不可為負數，且每 X 點不可為 0！'); const db = loadDB(); db.warehouse.push({ type: 'transfer', targetAirline, name, current, unitPoints, unitMiles, bonusThres, bonusVal }); saveDB(db); $('trans-source-name').value = ''; $('trans-current').value = ''; $('trans-target-airline').value = ''; $('trans-unit-points').value = ''; $('trans-unit-miles').value = ''; $('trans-bonus-thres').value = ''; $('trans-bonus-val').value = ''; renderWarehouse(); }
-    function delWarehouseAsset(idx) { showConfirm('確定要刪除這筆資產嗎？', () => { const db = loadDB(); db.warehouse.splice(idx, 1); saveDB(db); renderWarehouse(); }, '刪除', '⚠️ 確認刪除'); }
-    function openEditAsset(idx) { editAssetTargetIdx = idx; const db = loadDB(); const asset = db.warehouse[idx]; if(!asset) return; document.getElementById('edit-asset-name').innerText = asset.name; document.getElementById('edit-asset-val').value = asset.current; const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')); m.show(); }
-    function saveAssetEdit() { const val = parseFloat(document.getElementById('edit-asset-val').value); if(isNaN(val) || val < 0) return showAlert('請輸入有效數值 (>=0)'); const db = loadDB(); if(db.warehouse[editAssetTargetIdx]) { db.warehouse[editAssetTargetIdx].current = val; saveDB(db); bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')).hide(); renderWarehouse(); } }
-    function openCorrection(id, name) { const kw = ($('keyword-input').value || '').trim(); if(!kw) { return showAlert('請注意：\n\n您必須先在「消費類別/備註」欄位輸入一個關鍵字 (例如: 麥當勞)，系統才能針對該關鍵字設定專屬的回饋規則。'); } correctionTarget = { id, name }; $('modal-card-name').innerText = name; $('modal-keyword').innerText = kw; $('modal-new-rate').value = ''; const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal')); m.show(); }
-    function saveCorrection() { const kw = ($('keyword-input').value || '').trim(); const val = parseFloat($('modal-new-rate').value); if(isNaN(val) || val < 0) return showAlert('請輸入有效的正數值 (0 代表無回饋)'); const rules = loadRules(); rules[`${kw.toLowerCase()}|${correctionTarget.id}`] = val; saveRules(rules); bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal')).hide(); calculate(); }
-    function clearCustomRules() { showConfirm('確定清除所有手動修正的規則嗎？', () => { localStorage.removeItem(RULES_KEY); calculate(); }, '刪除', '⚠️ 確認刪除'); }
-    function $(id) { return document.getElementById(id); }
-    function toggleSwitch(id) { }
+
+    // Warehouse Logic
+    function renderWarehouse() {
+        const db = loadDB(); const list = document.getElementById('warehouse-list'); list.innerHTML = '';
+        if(db.warehouse.length === 0) { list.innerHTML = '<div class="text-muted text-center py-4">倉庫是空的</div>'; return; }
+        
+        // Group by Airline
+        const groups = {};
+        db.warehouse.forEach((asset, idx) => {
+            const key = asset.targetAirline;
+            if(!groups[key]) groups[key] = { total: 0, items: [] };
+            
+            // Calculate equivalent miles
+            let equiv = 0;
+            if(asset.type === 'airline') { equiv = asset.current; } 
+            else { 
+               // Simple estimation for display
+               const ratio = (asset.unitMiles / asset.unitPoints);
+               equiv = Math.floor(asset.current * ratio);
+            }
+            groups[key].total += equiv;
+            groups[key].items.push({ ...asset, idx });
+        });
+
+        for(let key in groups) {
+            const g = groups[key];
+            let itemsHtml = '';
+            g.items.forEach(item => {
+                itemsHtml += `
+                <div class="asset-item">
+                    <div class="asset-info">
+                        <div class="asset-name">${item.name}</div>
+                        <div class="asset-detail text-muted">持有: ${item.current.toLocaleString()} / 估值: ${Math.floor(item.current * (item.unitMiles/item.unitPoints)).toLocaleString()} 哩</div>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-pen btn-asset-edit me-2" onclick="openEditAsset(${item.idx})"></i>
+                        <i class="fa-solid fa-trash-can btn-asset-del" onclick="delAsset(${item.idx})"></i>
+                    </div>
+                </div>`;
+            });
+
+            const div = document.createElement('div'); div.className = 'airline-group-card';
+            div.innerHTML = `
+            <div class="airline-header"><div class="airline-title"><i class="fa-solid fa-plane-up me-2"></i>${key}</div><div class="airline-total">${g.total.toLocaleString()} <small style="font-size:0.5em;">哩(估)</small></div></div>
+            <div class="airline-body">${itemsHtml}</div>`;
+            list.appendChild(div);
+        }
+    }
+    
+    function addNativeAsset() {
+        const name = $('native-airline-name').value; const val = parseFloat($('native-current').value);
+        if(!name || isNaN(val)) return showAlert('請輸入完整資訊');
+        const db = loadDB(); db.warehouse.push({ type: 'airline', targetAirline: name, name: name, current: val, unitPoints:1, unitMiles:1 });
+        saveDB(db); renderWarehouse(); $('native-airline-name').value=''; $('native-current').value='';
+    }
+    
+    function addTransferAsset() {
+        const src = $('trans-source-name').value; const val = parseFloat($('trans-current').value); const target = $('trans-target-airline').value;
+        const uP = parseFloat($('trans-unit-points').value); const uM = parseFloat($('trans-unit-miles').value);
+        if(!src || !target || isNaN(val) || isNaN(uP) || isNaN(uM)) return showAlert('請輸入完整資訊');
+        const db = loadDB(); db.warehouse.push({ type: 'transfer', targetAirline: target, name: src, current: val, unitPoints: uP, unitMiles: uM });
+        saveDB(db); renderWarehouse(); $('trans-source-name').value=''; $('trans-current').value='';
+    }
+
+    function delAsset(idx) { showConfirm('確定要刪除這項資產嗎？', () => { const db = loadDB(); db.warehouse.splice(idx, 1); saveDB(db); renderWarehouse(); }, '刪除', '⚠️ 確認刪除'); }
+    
+    function openEditAsset(idx) { editAssetTargetIdx = idx; const db = loadDB(); const asset = db.warehouse[idx]; document.getElementById('edit-asset-name').innerText = asset.name; document.getElementById('edit-asset-val').value = asset.current; const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')); m.show(); }
+    
+    function saveAssetEdit() { const val = parseFloat(document.getElementById('edit-asset-val').value); if(isNaN(val)) return showAlert('請輸入有效數值'); const db = loadDB(); db.warehouse[editAssetTargetIdx].current = val; saveDB(db); renderWarehouse(); bootstrap.Modal.getOrCreateInstance(document.getElementById('editAssetModal')).hide(); }
+
+    function openCorrection(id, name) { correctionTarget = { id, name }; const k = document.getElementById('keyword-input').value; if(!k) return showAlert('請先在主畫面輸入「關鍵字」才能設定修正規則'); document.getElementById('modal-card-name').innerText = name; document.getElementById('modal-keyword').innerText = k; document.getElementById('modal-new-rate').value = ''; const m = bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal')); m.show(); }
+    
+    function saveCorrection() { const rate = parseFloat(document.getElementById('modal-new-rate').value); if(isNaN(rate)) return showAlert('請輸入數值'); const k = document.getElementById('modal-keyword').innerText; const ruleKey = `${k}|${correctionTarget.id}`; const rules = loadRules(); rules[ruleKey] = rate; saveRules(rules); bootstrap.Modal.getOrCreateInstance(document.getElementById('correctionModal')).hide(); calculate(); }
+    
+    function clearCustomRules() { showConfirm('確定要清除所有「修正回饋」的自訂規則嗎？', () => { localStorage.removeItem(RULES_KEY); showAlert('已清除所有自訂規則'); }, '清除', '⚠️ 確認清除'); }
+    
+    function exportData() { const data = { db: loadDB(), rules: loadRules() }; const blob = new Blob([JSON.stringify(data,null,2)], {type : 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `miles_backup_${Date.now()}.json`; a.click(); }
+
+    function updateKeywordPlaceholder() {
+        const cat = document.getElementById('category').value;
+        const kw = document.getElementById('keyword-input');
+        if(cat === 'flight_ci') kw.placeholder = '例如: 華航官網, CI...';
+        else if(cat === 'flight_cx') kw.placeholder = '例如: 國泰官網, CX...';
+        else kw.placeholder = '輸入店家關鍵字 (如: 麥當勞, Agoda, 停車)...';
+    }
 
     window.onload = function() { 
         updateStatusUI(); 
@@ -863,5 +1127,4 @@
   </script>
 </body>
 </html>
-
 
