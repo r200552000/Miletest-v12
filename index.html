@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TDC環哩匯 x 航空卡消費累哩工具 v12.31</title>
+  <title>TDC環哩匯 x 航空卡消費累哩工具 v12.32</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Mali:wght@500;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,7 +11,7 @@
 
   <style>
     /* =========================
-       CSS 樣式表 (v12.31 Re-issue)
+       CSS 樣式表 (v12.32)
        ========================= */
     :root {
       --bg-main: #fffdf9;
@@ -170,7 +170,7 @@
     <div class="d-flex align-items-center">
       <div class="header-icon"><i class="fa-solid fa-plane-departure"></i></div>
       <div class="header-title">
-        <h5>TDC 航空累哩工具<br>v12.31</h5>
+        <h5>TDC 航空累哩工具<br>v12.32</h5>
         <small class="text-secondary fw-bold">⚙️ 專業會計版</small>
       </div>
     </div>
@@ -312,7 +312,7 @@
       </div>
     </div>
 
-    <!-- Page 4: Warehouse (Dual Cards) -->
+    <!-- Page 4: Warehouse -->
     <div id="page-warehouse" class="page-section" style="display:none;">
         <div class="input-block-card">
             <div class="input-block-title text-primary"><i class="fa-solid fa-plane"></i> 存入航空哩程 (原生)</div>
@@ -368,7 +368,7 @@
     </div>
   </div>
 
-  <!-- Guide Modal (Complete Morandi) -->
+  <!-- Guide Modal -->
   <div class="modal fade" id="guideModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" style="background:transparent; border:none; box-shadow:none;">
@@ -428,7 +428,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     /* =========================
-       TDC Miles Tool v12.28
+       TDC Miles Tool v12.32
        ========================= */
 
     const DB_KEY = 'MILES_APP_V12_6_DATA'; 
@@ -663,7 +663,15 @@
             currentResults.push({ id: c.id, name: c.name, ...res, twdSpend, twdBase });
         });
 
-        currentResults.sort((a,b) => b.miles - a.miles);
+        // v12.32 Fix: Bidirectional Sorting
+        if (amt < 0) {
+            // Negative amounts (Refunds): Sort ascending (-25 comes before -4)
+            currentResults.sort((a,b) => a.miles - b.miles);
+        } else {
+            // Positive amounts (Normal): Sort descending (25 comes before 4)
+            currentResults.sort((a,b) => b.miles - a.miles);
+        }
+        
         renderResults(currentResults);
     }
 
@@ -722,7 +730,7 @@
         
         saveDB(db);
         updateUI();
-        showAlert(`✅ 已加入待結算明細\n${item.name}: +${points} ${unitText}`);
+        showAlert(`✅ 已加入待結算明細\n${item.name}: ${points>0?'+':''}${points} ${unitText}`);
     }
 
     function getLimitKey(db, id, dateObj) {
@@ -764,7 +772,7 @@
                     <div class="d-flex align-items-center">
                         <div class="item-val">
                             <div class="${item.spend<0?'text-danger':''}">${item.spend.toLocaleString()}</div>
-                            <div class="text-primary small">+${item.miles} ${item.unit}</div>
+                            <div class="text-primary small">${item.miles>0?'+':''}${item.miles} ${item.unit}</div>
                         </div>
                         <div class="btn-item-del" onclick="delTx('${monthKey}','${item.key}')"><i class="fa-solid fa-trash-can"></i></div>
                     </div>
@@ -807,7 +815,7 @@
                 const item = agg[id];
                 let u = item.unit;
                 if(!u || u==='undefined') { u = (id.includes('hsbc')) ? '積分' : '哩'; }
-                h += `<div class="summary-card"><div><div class="summary-name">${item.name}</div><div class="summary-spend">$${item.spend.toLocaleString()}</div></div><div class="summary-miles">${item.miles.toLocaleString()} <small style="font-size:0.6em">${u}</small></div></div>`;
+                h += `<div class="summary-card"><div><div class="summary-name">${item.name}</div><div class="summary-spend ${item.spend<0?'text-danger':''} ">$${item.spend.toLocaleString()}</div></div><div class="summary-miles">${item.miles.toLocaleString()} <small style="font-size:0.6em">${u}</small></div></div>`;
             }
             statusCon.innerHTML = h;
         }
@@ -946,7 +954,6 @@
     function showConfirm(msg, cb) { if(confirm(msg)) cb(); }
     function showAlert(msg) { document.getElementById('alert-msg').innerText=msg; new bootstrap.Modal(document.getElementById('customAlertModal')).show(); }
 
-    // Enhanced Guide with Warehouse & Settings
     function openGuide() {
         const content = `
         <div class="guide-slide p-4 mb-4" style="background:var(--m-sage); color:white;">
